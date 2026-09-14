@@ -1,0 +1,32 @@
+parameters:
+  - name: "tpl_type"
+    type: string
+    default: ""
+
+variables:
+  - name: APP_NAME
+    value: UMEventProcessors
+  - name: REGION_NAME
+    value: "us-east-2"
+    readonly: true
+  - name: AGENT_POOL
+    value: "aws-cdk"
+
+  - name: NODE_VERSION
+    value: "22.11.0"
+  - name: CDK_VERSION
+    value: "2.1033.0"
+  - name: PYTHON_VERSION
+    value: "3.11.5"
+
+  - ${{ if eq(parameters.tpl_type, 'Build') }}:
+      - name: LOCAL_PATH
+        value: "$(Build.Repository.LocalPath)/"
+
+  - ${{ if eq(parameters.tpl_type, 'Deploy') }}:
+      - name: RESOURCE_PIPELINE_NAME
+        value: "UMEventProcessorsBuild"
+      - name: ARTIFACT_NAME
+        value: "UMEventProcessors"
+      - name: LOCAL_PATH
+        value: "$(PIPELINE.WORKSPACE)/$(RESOURCE_PIPELINE_NAME)/$(ARTIFACT_NAME)/"

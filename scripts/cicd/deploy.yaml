@@ -1,0 +1,45 @@
+trigger: none
+
+resources:
+  repositories:
+  - repository: templates
+    type: git
+    name: ado-pipeline-templates
+  pipelines:
+  - pipeline: UMEventProcessorsBuild
+    source: um-event-processors
+    project: NUCLEUS
+    trigger:
+      branches:
+        include:
+        - release/*
+        - hotfix/*
+
+variables:
+- template: vars/vars-global.yaml
+  parameters:
+    tpl_type: "Deploy"
+
+stages:
+- template: _template-deploy.yaml
+  parameters:
+    tpl_Enabled: true # TODO: restore branch condition after approval testing
+    tpl_Environment: "test"
+
+- template: _template-deploy.yaml
+  parameters:
+    tpl_Enabled: true # TODO: restore branch condition after approval testing
+    tpl_Environment: "stage"
+    tpl_DependsOn: "test"
+
+- template: _template-deploy.yaml
+  parameters:
+    tpl_Enabled: true # TODO: restore branch condition after approval testing
+    tpl_Environment: "prod"
+    tpl_DependsOn: "stage"
+
+- template: gitflow/finish-branch-template.yml@templates
+  parameters:
+    srcBranch: ${{ variables['Build.SourceBranch'] }}
+    srcVersion: ${{ variables['Build.SourceBranchName'] }}
+    prodStageName: "Deploy_prod"

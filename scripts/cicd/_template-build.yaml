@@ -1,0 +1,39 @@
+parameters:
+- name: tpl_clean
+  type: boolean
+  default: true
+
+- name: tpl_Postclean
+  type: boolean
+  default: true
+
+- name: tpl_displayName
+  type: string
+  default: ''
+
+- name: tpl_serviceConnection
+  type: string  
+
+stages:
+- stage: Build
+  displayName: 'Build'
+  variables:
+    ${{ if eq(variables['Build.Reason'], 'PullRequest') }}:
+      SERVICE_CONNECTION: "pod12-sandbox"
+    ${{ if ne(variables['Build.Reason'], 'PullRequest') }}:
+      SERVICE_CONNECTION: ${{ parameters.tpl_serviceConnection }}
+
+  jobs:
+  - deployment: "Build"
+    displayName: "Build and Deploy to ${{ variables.SERVICE_CONNECTION}}"
+    workspace:
+      clean: all
+    environment: ${{ variables.SERVICE_CONNECTION}}
+    pool:
+      name: $(AGENT_POOL)
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - script: echo "Placeholder build step"
+            displayName: 'Placeholder - Build'

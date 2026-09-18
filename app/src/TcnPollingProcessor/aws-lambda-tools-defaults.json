@@ -1,0 +1,11 @@
+{
+	"profile": "",
+	"region": "",
+	"configuration": "Release",
+	"function-architecture": "x86_64",
+	"function-runtime": "dotnet8",
+	"function-memory-size": 256,
+	"function-timeout": 300,
+	"function-handler": "TcnPollingProcessor::TcnPollingProcessor.Function::FunctionHandler",
+	"environment-variables": "POWERTOOLS_SERVICE_NAME=TcnPollingProcessor; POWERTOOLS_LOGGER_LOG_EVENT=true; POWERTOOLS_LOG_LEVEL=Debug; POWERTOOLS_METRICS_NAMESPACE=UM-TcnPollingProcessor"
+}

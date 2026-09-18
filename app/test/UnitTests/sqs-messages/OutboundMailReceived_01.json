@@ -1,0 +1,20 @@
+{
+	"Records": [
+		{
+			"messageId": "19dd0b57-b21e-4ac1-bd88-01bbb068cb78",
+			"receiptHandle": "MessageReceiptHandle",
+			"body": "{\"version\":\"0\",\"id\":\"a43a861a-8b5d-46e6-a175-6979a75f6385\",\"detail-type\":\"OutboundMailReceived\",\"source\":\"com.navitus.integration.priorauth\",\"account\":\"255169513165\",\"time\":\"2025-01-07T20:53:38Z\",\"region\":\"us-east-2\",\"resources\":[],\"detail\":{\"entityType\":\"Mail\",\"xTransactionId\":\"4b6717db-fb23-4444-8eff-9ace5292a923\",\"payload\":{\"navitusEpisodeId\":\"1234567890\",\"transactionId\":\"d312c8a6-a4b9-4589-a421-61b0fcd927ed\",\"externalEpisodeId\":\"1098765432\",\"clientName\":\"banjo\",\"recipientName\":\"Art Vandelay\",\"documentRecipient\":\"Member\",\"s3ObjectKey\":\"OUTBOUND\/1234567890_d312c8a6-a4b9-4589-a421-61b0fcd927ed.pdf\"},\"version\":\"1\"}}",
+			"attributes": {
+				"ApproximateReceiveCount": "1",
+				"SentTimestamp": "1523232000000",
+				"SenderId": "123456789012",
+				"ApproximateFirstReceiveTimestamp": "1523232000001"
+			},
+			"messageAttributes": {},
+			"md5OfBody": "7b270e59b47ff90a553787216d55d91d",
+			"eventSource": "aws:sqs",
+			"eventSourceARN": "arn:{partition}:sqs:{region}:123456789012:MyQueue",
+			"awsRegion": "{region}"
+		}
+	]
+}

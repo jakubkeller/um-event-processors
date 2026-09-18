@@ -1,0 +1,82 @@
+{
+	"version": "0",
+	"id": "32901f37-7caf-72e5-ad99-5991ec596715",
+	"detail-type": "EpisodeUpdatedV2",
+	"source": "com.navitus.um",
+	"account": "406651776354",
+	"time": "2024-07-15T21:46:30Z",
+	"region": "us-east-2",
+	"resources": [],
+	"detail": {
+		"oldEpisode": {
+			"navitusEpisodeId": 0,
+			"memberInformation": {
+				"personCode": "01",
+				"subscriberNumber": "62314010557*NVCOBE",
+				"groupNumber": "COKA001",
+				"uniqueId": "6231401055701*NVCOBE"
+			},
+			"carrierId": "NVCOBE",
+			"externalEpisodeId": "ABC123",
+			"drugIdentifiers": {
+				"gpi": "11111111111111",
+				"ndc": "22222222222"
+			},
+			"drugDescription": "test-DrugDescription",
+			"prescriberId": "test-PrescriberId",
+			"episodeSourceType": "Phone",
+			"initiationDateTime": "2023-12-22T16:31:30.359+00:00",
+			"enteredBy": "BrunoTest",
+			"finalizationDateTime": null,
+			"decisionLanguage": "test-DecisionLang",
+			"mandatorySpecialtyPharmacy": "test-MandatorySpecialtyPharm",
+			"approvalDuration": "test-ApprovalDur",
+			"rPhReviewerId": "test-RPHReviewerId",
+			"mdReviewerId": "test-MDReviewerId",
+			"navitusAuthorizationNumber": 422401301823768,
+			"urgent": true,
+			"priorAuthStatus": "InProgress",
+			"coverageLevel": "test-CoverageLevel",
+			"quantityLimit": "test-QuanityLimit",
+			"reason": "test-Reason",
+			"denialReason": "test-DenialReason",
+			"modificationDateTime": "2024-07-15T21:35:35.2799+00:00",
+			"modifiedBy": "UnitTest"
+		},
+		"newEpisode": {
+			"navitusEpisodeId": 422407152119216,
+			"memberInformation": {
+				"personCode": "01",
+				"subscriberNumber": "62314010557*NVCOBE",
+				"groupNumber": "COKA001",
+				"uniqueId": "6231401055701*NVCOBE"
+			},
+			"carrierId": "NVCOBE",
+			"externalEpisodeId": "ABC123",
+			"drugIdentifiers": {
+				"gpi": "11111111111111",
+				"ndc": "22222222222"
+			},
+			"drugDescription": "test-DrugDescription",
+			"prescriberId": "test-PrescriberId",
+			"episodeSourceType": "Phone",
+			"initiationDateTime": "2023-12-22T16:31:30.359+00:00",
+			"enteredBy": "BrunoTest",
+			"finalizationDateTime": null,
+			"decisionLanguage": "test-DecisionLang",
+			"mandatorySpecialtyPharmacy": "test-MandatorySpecialtyPharm",
+			"approvalDuration": "test-ApprovalDur",
+			"rPhReviewerId": "test-RPHReviewerId",
+			"mdReviewerId": "test-MDReviewerId",
+			"navitusAuthorizationNumber": 422401301823768,
+			"urgent": true,
+			"priorAuthStatus": "InProgress",
+			"coverageLevel": "test-CoverageLevel",
+			"quantityLimit": "test-QuanityLimit",
+			"reason": "test-Reason",
+			"denialReason": "test-DenialReason",
+			"modificationDateTime": "2024-07-15T21:46:28.4283855+00:00",
+			"modifiedBy": "UnitTest"
+		}
+	}
+}

@@ -1,0 +1,18 @@
+{
+	"profiles": {
+		"Mock Lambda Test Tool": {
+			"commandName": "Executable",
+			"executablePath": "%USERPROFILE%\\.dotnet\\tools\\dotnet-lambda-test-tool-8.0.exe",
+			"commandLineArgs": "--port 5050",
+			"workingDirectory": ".\\bin\\$(Configuration)\\net8.0",
+			"environmentVariables": {
+				"AWS_PROFILE": "pod12-admin",
+				"LOCAL_APP_ROOT": "abhilash",
+				"UMAuthAppClient": "priorAuth/appClient/Navitus",
+				"NavitusCognitoDomainURL": "https://dev-navitus.auth.us-east-2.amazoncognito.com",
+				"NavitusUtilizationManagementBaseURL": "https://localhost:7329/v1",
+				"SECRET_NAME_UM_APP_CLIENT": "arn:aws:secretsmanager:us-east-2:822596811112:secret:temp-UM-AppClient-aJ5sJ1"
+			}
+		}
+	}
+}

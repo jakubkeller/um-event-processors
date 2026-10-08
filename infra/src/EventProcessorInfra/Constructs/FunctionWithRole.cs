@@ -94,7 +94,7 @@ public class FunctionWithRole : Construct
                 Architecture = Architecture.X86_64,
                 Code = Code.FromAsset(props.AssetPath),
                 Handler = props.Handler,
-                Runtime = Runtime.DOTNET_8,
+                Runtime = Runtime.DOTNET_10,
                 Timeout = Duration.Seconds(props.Timeout ?? 29),
                 MemorySize = props.MemorySize ?? 512,
                 Environment = environment,

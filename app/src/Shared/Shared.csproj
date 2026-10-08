@@ -1,25 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<AssemblyName>TemplatedNoteProcessor.$(MSBuildProjectName)</AssemblyName>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Amazon.Lambda.AspNetCoreServer.Hosting" Version="1.7.0" />
-		<PackageReference Include="AWS.Lambda.Powertools.Logging" Version="1.5.1" />
-		<PackageReference Include="AWSSDK.Core" Version="3.7.304.29" />
-		<PackageReference Include="AWSSDK.SSO" Version="3.7.300.118" Condition="'$(Configuration)'=='Debug'" />
-		<PackageReference Include="AWSSDK.SSOOIDC" Version="3.7.302.29" Condition="'$(Configuration)'=='Debug'" />
-		<PackageReference Include="AWSSDK.SecretsManager" Version="3.7.304.14" />
-		<PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.7.305.9" />
+		<PackageReference Include="Amazon.Lambda.AspNetCoreServer.Hosting" Version="2.2.1" />
+		<PackageReference Include="AWS.Lambda.Powertools.Logging" Version="3.2.2" />
+		<PackageReference Include="AWSSDK.Core" Version="4.0.102.6" />
+		<PackageReference Include="AWSSDK.SSO" Version="4.0.100.16" Condition="'$(Configuration)'=='Debug'" />
+		<PackageReference Include="AWSSDK.SSOOIDC" Version="4.0.100.15" Condition="'$(Configuration)'=='Debug'" />
+		<PackageReference Include="AWSSDK.SecretsManager" Version="4.0.100.14" />
+		<PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="4.0.103.9" />
 		<PackageReference Include="AutomaticInterface" Version="2.3.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="3.4.0" />
+		<PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="4.7.0" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.6.3" />
 		<PackageReference Include="AWSXRayRecorder.Core" Version="2.15.0" />
 		<PackageReference Include="AWSXRayRecorder.Handlers.System.Net" Version="2.12.0" />

@@ -12,7 +12,7 @@ parameters:
   default: ''
 
 - name: tpl_serviceConnection
-  type: string  
+  type: string
 
 stages:
 - stage: Build
@@ -35,5 +35,110 @@ stages:
       runOnce:
         deploy:
           steps:
-          - script: echo "Placeholder build step"
-            displayName: 'Placeholder - Build'
+          - checkout: self
+            fetchDepth: 1
+            clean: ${{parameters.tpl_clean}}
+
+          - script: |
+              echo "Environment variables"
+              echo "====================="
+              env | sort
+            displayName: 'Display Environment Variables'
+
+          - task: UseDotNet@2
+            displayName: 'Use .NET 10 SDK'
+            inputs:
+              packageType: 'sdk'
+              version: '10.0.100'
+
+          - script: |
+              echo "which dotnet: $(which dotnet)"
+              echo "DOTNET_ROOT: $DOTNET_ROOT"
+              dotnet --list-sdks
+            displayName: 'Diagnose .NET SDK Resolution'
+
+          - task: ShellScript@2
+            displayName: 'Unit Tests'
+            inputs:
+              args: ''
+              scriptPath: '$(LOCAL_PATH)scripts/cicd/tests.sh'
+              disableAutoCwd: true
+
+          - task: PublishCodeCoverageResults@2
+            displayName: 'Publish Code Coverage'
+            inputs:
+              codeCoverageTool: Cobertura
+              summaryFileLocation: '$(TESTRESULT_PATH)/**/coverage.cobertura.xml'
+
+          - task: ShellScript@2
+            displayName: 'Publish Event Processor Functions'
+            inputs:
+              args: ''
+              scriptPath: '$(EVENT_PROCESSORS_SCRIPTS_PATH)/publish_event_processor_functions.sh'
+              disableAutoCwd: true
+
+          - task: AWSShellScript@1
+            displayName: "CDK Synth"
+            inputs:
+              awsCredentials: ${{ variables.SERVICE_CONNECTION}}
+              regionName: $(REGION_NAME)
+              scriptType: filePath
+              filePath: '$(INFRA_SCRIPTS_PATH)/synth.sh'
+              workingDirectory: "$(Build.Repository.LocalPath)"
+              disableAutoCwd: true
+
+          - task: AWSShellScript@1
+            displayName: 'CDK Deploy'
+            inputs:
+              awsCredentials: ${{ variables.SERVICE_CONNECTION}}
+              regionName: $(REGION_NAME)
+              scriptType: filePath
+              filePath: '$(INFRA_SCRIPTS_PATH)/deploy.sh'
+              workingDirectory: "$(Build.Repository.LocalPath)"
+              disableAutoCwd: true
+
+          - task: PublishTestResults@2
+            displayName: Publish Test Results
+            condition: succeededOrFailed()
+            inputs:
+              testResultsFormat: VSTest
+              testResultsFiles: '*.trx'
+              searchFolder: '$(TESTRESULT_PATH)'
+              testRunTitle: '$(Build.BuildId) Test'
+
+          - task: CopyFiles@2
+            condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+            displayName: 'Stage Build Artifacts'
+            inputs:
+              SourceFolder: "$(Build.Repository.LocalPath)/"
+              Contents: |
+                **/dist/**
+                **/scripts/**
+                **/infra/src/**/*.cs
+                **/infra/src/**/*.csproj
+                **/infra/cdk.json
+                **/infra/src/EventProcessorInfra/infraconfig.json
+              TargetFolder: "$(Build.ArtifactStagingDirectory)/stage/"
+              CleanTargetFolder: true
+
+          - task: ArchiveFiles@2
+            condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+            displayName: Zip Artifact
+            inputs:
+              rootFolderOrFile: "$(Build.ArtifactStagingDirectory)/stage/"
+              includeRootFolder: false
+              archiveType: 'zip'
+              archiveFile: "$(Build.ArtifactStagingDirectory)/$(APP_NAME)-$(Build.BuildId).zip"
+              replaceExistingArchive: true
+
+          - task: PublishBuildArtifacts@1
+            condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+            displayName: 'Publish Build Artifact'
+            inputs:
+              PathtoPublish: "$(Build.ArtifactStagingDirectory)/$(APP_NAME)-$(Build.BuildId).zip"
+              ArtifactName: "$(APP_NAME)"
+              PublishLocation: Container
+
+          - task: mspremier.PostBuildCleanup.PostBuildCleanup-task.PostBuildCleanup@3
+            condition: ${{ parameters.tpl_Postclean }}
+            displayName: 'Clean Agent Directories'

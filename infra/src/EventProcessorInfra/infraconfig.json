@@ -42,7 +42,7 @@
       "TcnScheduleTemplateNumber": "1",
       "TcnImportTemplateNumber": "1",
       "TcnDescription": "Medicare PA Oral Notification",
-      "TcnTimezone": "America/Denver",
+      "TcnTimezone": "America/Chicago",
       "TcnDialOrder": "first number",
       "UMEventBusArn": "arn:aws:events:us-east-2:822596811112:event-bus/umEventBus",
       "TcnFailureNotificationDistributionList": "aws.utilizationmanagement@navitus.com",
@@ -53,7 +53,8 @@
       "MedicationHistoryMsAuthEnv": "Test",
       "RxHistoryEntraCredentialsSecretName": "RxHistory-EntraCredentials",
       "MemberPricingBaseURL": "https://memberpricing-test.navitus.com/nav/claimsend.php",
-      "DrugPricingBaseURL": "https://drugpricing-test.api.navitus.com/V1/DrugPricing/GetDrugPrices"
+      "DrugPricingBaseURL": "https://drugpricing-test.api.navitus.com/V1/DrugPricing/GetDrugPrices",
+      "TcnEnabled": false
     },
     {
       "Name": "dev",
@@ -85,7 +86,7 @@
       "TcnScheduleTemplateNumber": "1",
       "TcnImportTemplateNumber": "1",
       "TcnDescription": "Medicare PA Oral Notification",
-      "TcnTimezone": "America/Denver",
+      "TcnTimezone": "America/Chicago",
       "TcnDialOrder": "first number",
       "UMEventBusArn": "arn:aws:events:us-east-2:406651776354:event-bus/umEventBus",
       "TcnFailureNotificationDistributionList": "aws.utilizationmanagement@navitus.com",
@@ -96,7 +97,8 @@
       "MedicationHistoryMsAuthEnv": "Test",
       "RxHistoryEntraCredentialsSecretName": "RxHistory-EntraCredentials",
       "MemberPricingBaseURL": "https://memberpricing-test.navitus.com/nav/claimsend.php",
-      "DrugPricingBaseURL": "https://drugpricing-test.api.navitus.com/V1/DrugPricing/GetDrugPrices"
+      "DrugPricingBaseURL": "https://drugpricing-test.api.navitus.com/V1/DrugPricing/GetDrugPrices",
+      "TcnEnabled": false
     },
     {
       "Name": "test",
@@ -128,7 +130,7 @@
       "TcnScheduleTemplateNumber": "1",
       "TcnImportTemplateNumber": "1",
       "TcnDescription": "Medicare PA Oral Notification",
-      "TcnTimezone": "America/Denver",
+      "TcnTimezone": "America/Chicago",
       "TcnDialOrder": "first number",
       "UMEventBusArn": "arn:aws:events:us-east-2:689489877515:event-bus/umEventBus",
       "TcnFailureNotificationDistributionList": "aws.utilizationmanagement@navitus.com",
@@ -139,7 +141,8 @@
       "MedicationHistoryMsAuthEnv": "Test",
       "RxHistoryEntraCredentialsSecretName": "RxHistory-EntraCredentials",
       "MemberPricingBaseURL": "https://memberpricing-test.navitus.com/nav/claimsend.php",
-      "DrugPricingBaseURL": "https://drugpricing-test.api.navitus.com/V1/DrugPricing/GetDrugPrices"
+      "DrugPricingBaseURL": "https://drugpricing-test.api.navitus.com/V1/DrugPricing/GetDrugPrices",
+      "TcnEnabled": false
     },
     {
       "Name": "stage",
@@ -181,7 +184,7 @@
       "TcnScheduleTemplateNumber": "1",
       "TcnImportTemplateNumber": "1",
       "TcnDescription": "Medicare PA Oral Notification",
-      "TcnTimezone": "America/Denver",
+      "TcnTimezone": "America/Chicago",
       "TcnDialOrder": "first number",
       "UMEventBusArn": "arn:aws:events:us-east-2:708388369307:event-bus/umEventBus",
       "TcnFailureNotificationDistributionList": "aws.utilizationmanagement@navitus.com",
@@ -192,7 +195,8 @@
       "MedicationHistoryMsAuthEnv": "Test",
       "RxHistoryEntraCredentialsSecretName": "RxHistory-EntraCredentials",
       "MemberPricingBaseURL": "https://memberpricing-test.navitus.com/nav/claimsend.php",
-      "DrugPricingBaseURL": "https://drugpricing-stage.api.navitus.com/V1/DrugPricing/GetDrugPrices"
+      "DrugPricingBaseURL": "https://drugpricing-stage.api.navitus.com/V1/DrugPricing/GetDrugPrices",
+      "TcnEnabled": true
     },
     {
       "Name": "prod",
@@ -224,7 +228,7 @@
       "TcnScheduleTemplateNumber": "1",
       "TcnImportTemplateNumber": "1",
       "TcnDescription": "Medicare PA Oral Notification",
-      "TcnTimezone": "America/Denver",
+      "TcnTimezone": "America/Chicago",
       "TcnDialOrder": "first number",
       "UMEventBusArn": "arn:aws:events:us-east-2:407736563583:event-bus/umEventBus",
       "TcnFailureNotificationDistributionList": "DL-PAMailroom@navitus.com,prior.authorization@navitus.com",
@@ -235,7 +239,8 @@
       "MedicationHistoryMsAuthEnv": "Prod",
       "RxHistoryEntraCredentialsSecretName": "RxHistory-EntraCredentials",
       "MemberPricingBaseURL": "https://memberpricing.navitus.com/nav/claimsend.php",
-      "DrugPricingBaseURL": "https://drugpricing.api.navitus.com/V1/DrugPricing/GetDrugPrices"
+      "DrugPricingBaseURL": "https://drugpricing.api.navitus.com/V1/DrugPricing/GetDrugPrices",
+      "TcnEnabled": false
     }
   ]
 }

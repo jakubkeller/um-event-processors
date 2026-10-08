@@ -3265,6 +3265,13 @@ namespace ServiceClients.Navitus.IntegrationPriorAuth
         [System.Text.Json.Serialization.JsonPropertyName("daysOld")]
         public int? DaysOld { get; set; }
 
+        /// <summary>
+        /// When set to true, this property overrides age-related restrictions for the medication, allowing it to be dispensed regardless of the patient's age.
+        /// </summary>
+
+        [System.Text.Json.Serialization.JsonPropertyName("ignoreAgeHandler")]
+        public bool? IgnoreAgeHandler { get; set; }
+
     }
 
     /// <summary>
@@ -5881,6 +5888,18 @@ namespace ServiceClients.Navitus.IntegrationPriorAuth
         [System.Runtime.Serialization.EnumMember(Value = @"IREAutoForward")]
         IREAutoForward = 14,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"ComplaintAssist")]
+        ComplaintAssist = 15,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CTM")]
+        CTM = 16,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TexasMedicaidProviderComplaint")]
+        TexasMedicaidProviderComplaint = 17,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"URACComplaint")]
+        URACComplaint = 18,
+
     }
 
     /// <summary>
@@ -5994,6 +6013,9 @@ namespace ServiceClients.Navitus.IntegrationPriorAuth
 
         [System.Runtime.Serialization.EnumMember(Value = @"Resolved")]
         Resolved = 15,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Unresolved")]
+        Unresolved = 16,
 
     }
 
@@ -7051,7 +7073,7 @@ namespace ServiceClients.Navitus.IntegrationPriorAuth
     }
 
     /// <summary>
-    /// Standardized reason code for the given adjudication. Can be one of the following: \"OI\", \"NOI\", \"ZSEC\", \"ZSEP\", \"ZPAC\", \"ZPAP\", \"ZFEC\", \"ZFEP\", \"ZQLC\", \"ZQLP\", \"ZCFC\", \"ZCFP\", \"ZREC\", \"ZREP\", \"ZCEC\", \"ZCEP\", \"ZPBC\", \"ZPBP\", \"ZARC\", \"ZARP\", \"ZAPU\", \"ZAPO\", \"ZFEA\", \"ZPAA\", \"ZSEA\", \"ZFXC\", \"ZFYC\", \"ZFZC\", \"ZFXP\", \"ZFYP\", \"ZFZP\", \"ZMCW\", \"ZMCD\", \"ZAPI\", \"ZINV\", \"BATCH\", \"C\", \"CA\", \"CC\", \"CD\", \"CE\", \"CO\", \"COB\", \"COC\", \"CONTRA\", \"COXII\", \"DC\", \"DI\", \"DS\", \"FERTILITY\", \"GA\", \"MC\", \"MVA\", \"ND\", \"NF\", \"OL\", \"OP\", \"OR\", \"OW\", \"PA\", \"PB\", \"RF\", \"RM\", \"RR\", \"SO\", \"TF\", \"V\", \"ZCSR\", \"ZQLA\"
+    /// Standardized reason code for the given adjudication. Can be one of the following: \"OI\", \"NOI\", \"ZSEC\", \"ZSEP\", \"ZPAC\", \"ZPAP\", \"ZFEC\", \"ZFEP\", \"ZQLC\", \"ZQLP\", \"ZCFC\", \"ZCFP\", \"ZREC\", \"ZREP\", \"ZCEC\", \"ZCEP\", \"ZPBC\", \"ZPBP\", \"ZARC\", \"ZARP\", \"ZAPU\", \"ZAPO\", \"ZFEA\", \"ZPAA\", \"ZSEA\", \"ZFXC\", \"ZFYC\", \"ZFZC\", \"ZFXP\", \"ZFYP\", \"ZFZP\", \"ZMCW\", \"ZMCD\", \"ZAPI\", \"ZINV\", \"BATCH\", \"C\", \"CA\", \"CC\", \"CD\", \"CE\", \"CO\", \"COB\", \"COC\", \"CONTRA\", \"CP\", \"COXII\", \"DC\", \"DI\", \"DS\", \"FERTILITY\", \"GA\", \"MC\", \"MVA\", \"ND\", \"NF\", \"OL\", \"OP\", \"OR\", \"OW\", \"PA\", \"PB\", \"RF\", \"RM\", \"RR\", \"SO\", \"TF\", \"V\", \"ZCSR\", \"ZQLA\"
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum ReasonCodeIndicator
@@ -7195,77 +7217,80 @@ namespace ServiceClients.Navitus.IntegrationPriorAuth
         [System.Runtime.Serialization.EnumMember(Value = @"COXII")]
         COXII = 45,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"CP")]
+        CP = 46,
+
         [System.Runtime.Serialization.EnumMember(Value = @"DC")]
-        DC = 46,
+        DC = 47,
 
         [System.Runtime.Serialization.EnumMember(Value = @"DI")]
-        DI = 47,
+        DI = 48,
 
         [System.Runtime.Serialization.EnumMember(Value = @"DS")]
-        DS = 48,
+        DS = 49,
 
         [System.Runtime.Serialization.EnumMember(Value = @"FERTILITY")]
-        FERTILITY = 49,
+        FERTILITY = 50,
 
         [System.Runtime.Serialization.EnumMember(Value = @"GA")]
-        GA = 50,
+        GA = 51,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MC")]
-        MC = 51,
+        MC = 52,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MVA")]
-        MVA = 52,
+        MVA = 53,
 
         [System.Runtime.Serialization.EnumMember(Value = @"ND")]
-        ND = 53,
+        ND = 54,
 
         [System.Runtime.Serialization.EnumMember(Value = @"NF")]
-        NF = 54,
+        NF = 55,
 
         [System.Runtime.Serialization.EnumMember(Value = @"OL")]
-        OL = 55,
+        OL = 56,
 
         [System.Runtime.Serialization.EnumMember(Value = @"OP")]
-        OP = 56,
+        OP = 57,
 
         [System.Runtime.Serialization.EnumMember(Value = @"OR")]
-        OR = 57,
+        OR = 58,
 
         [System.Runtime.Serialization.EnumMember(Value = @"OW")]
-        OW = 58,
+        OW = 59,
 
         [System.Runtime.Serialization.EnumMember(Value = @"PA")]
-        PA = 59,
+        PA = 60,
 
         [System.Runtime.Serialization.EnumMember(Value = @"PB")]
-        PB = 60,
+        PB = 61,
 
         [System.Runtime.Serialization.EnumMember(Value = @"RF")]
-        RF = 61,
+        RF = 62,
 
         [System.Runtime.Serialization.EnumMember(Value = @"RM")]
-        RM = 62,
+        RM = 63,
 
         [System.Runtime.Serialization.EnumMember(Value = @"RR")]
-        RR = 63,
+        RR = 64,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SO")]
-        SO = 64,
+        SO = 65,
 
         [System.Runtime.Serialization.EnumMember(Value = @"TF")]
-        TF = 65,
+        TF = 66,
 
         [System.Runtime.Serialization.EnumMember(Value = @"V")]
-        V = 66,
+        V = 67,
 
         [System.Runtime.Serialization.EnumMember(Value = @"ZCSR")]
-        ZCSR = 67,
+        ZCSR = 68,
 
         [System.Runtime.Serialization.EnumMember(Value = @"ZQLA")]
-        ZQLA = 68,
+        ZQLA = 69,
 
         [System.Runtime.Serialization.EnumMember(Value = @"NotSet")]
-        NotSet = 69,
+        NotSet = 70,
 
     }
 

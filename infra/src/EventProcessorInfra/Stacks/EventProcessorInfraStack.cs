@@ -485,7 +485,7 @@ public class EventProcessorInfraStack : BaseStack
             "TcnOralNotificationEventRule",
             new RuleProps()
             {
-                Enabled = true,
+                Enabled = infraConfig.TcnEnabled,
                 EventBus = umEventBus,
                 Targets =
                 [
@@ -567,10 +567,16 @@ public class EventProcessorInfraStack : BaseStack
             "TcnPollingScheduleRule",
             new RuleProps()
             {
-                Enabled = true,
+                Enabled = infraConfig.TcnEnabled,
                 Schedule = Schedule.Rate(Duration.Minutes(15)),
                 Description = "Triggers TcnPollingProcessor every 15 minutes to poll for TCN call results",
-                Targets = [new LambdaFunction(lambda.LambdaFunction, new LambdaFunctionProps() { RetryAttempts = 0 })]
+                Targets =
+                [
+                    new LambdaFunction(lambda.LambdaFunction, new LambdaFunctionProps()
+                    {
+                        RetryAttempts = 0,
+                    })
+                ]
             }
         );
     }

@@ -1,15 +1,12 @@
-using Amazon.EventBridge;
-using Amazon.EventBridge.Model;
 using AWS.Lambda.Powertools.Logging;
 using Microsoft.Extensions.Configuration;
 using Models.Event;
 using ServiceClients.Navitus.IntegrationPriorAuth;
 using ServiceClients.Navitus;
 using Services.Interface;
+using Services.Mappers;
 using Shared.Authorization;
 using Shared.Services.Auth;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace Services.Implementation;
 
@@ -19,10 +16,6 @@ public class TcnPollingService : ITcnPollingService
     private readonly IUMServiceClient _umServiceClient;
     private readonly IIntegrationPriorAuthServiceClient _integrationPriorAuthServiceClient;
     private readonly IConfiguration _configuration;
-    private readonly IAmazonEventBridge _eventBridgeClient;
-    private readonly string _eventBusName;
-    private readonly string _eventSource;
-    private readonly JsonSerializerOptions _jsonSerializerOptions;
 
     public TcnPollingService(
         IAuthProvider authProvider,
@@ -40,11 +33,6 @@ public class TcnPollingService : ITcnPollingService
             configuration.GetValue<string>("IntegrationPriorAuthBaseURL")
             ?? throw new Exception("Missing required configuration value IntegrationPriorAuthBaseURL");
         _configuration = configuration;
-        _eventBridgeClient = new AmazonEventBridgeClient();
-        _eventBusName = configuration.GetValue<string>("UMEventBusArn")
-            ?? throw new Exception("Missing required configuration value UMEventBusArn");
-        _eventSource = configuration.GetValue<string>("UMEventSource") ?? "com.navitus.um";
-        _jsonSerializerOptions = new(JsonSerializerDefaults.Web) { Converters = { new JsonStringEnumConverter() } };
     }
 
     public async Task EnsureAuthenticated()
@@ -79,18 +67,26 @@ public class TcnPollingService : ITcnPollingService
         {
             try
             {
+                // The report is keyed by campaign TaskSid and can contain results for every contact
+                // dropped into that campaign, not just this one - match this detail's own episode.
                 var reportResponse = await _integrationPriorAuthServiceClient.GetFtpReportAsync(detail.TcnTaskSid, cancellationToken);
-                var callResult = reportResponse.Result?.CallResults?.FirstOrDefault();
+                var callResult = reportResponse.Result?.CallResults?
+                    .FirstOrDefault(r => r.EpisodeNumber == detail.EpisodeNumber.ToString());
 
                 await _umServiceClient.UpdateCallDetailAsync(new UpdateTcnCallDetailRequest
                 {
                     TcnTaskSid = detail.TcnTaskSid,
+                    EpisodeNumber = detail.EpisodeNumber,
                     CallResult = callResult?.ShortResult,
                     CompletedAt = callResult?.LastAttemptedAt,
                     DurationSeconds = callResult?.DurationSeconds,
                 }, cancellationToken);
 
-                Logger.LogInformation($"--- Updated TCN call detail for TaskSid: {detail.TcnTaskSid}, Result: {callResult?.ShortResult} ---");
+                Logger.LogInformation(
+                    "--- Updated TCN call detail for EpisodeNumber: {EpisodeNumber}, Result: {CallResult} ---",
+                    detail.EpisodeNumber,
+                    callResult?.ShortResult
+                );
 
                 if (callResult != null)
                 {
@@ -117,65 +113,54 @@ public class TcnPollingService : ITcnPollingService
             }
         }
 
-        // Send batched failure notification email if there were any failures
+        // Send one failure notification email per failed episode, since each email
+        // gets attached to that episode's documents and must not reference other episodes.
         if (failures.Count > 0)
         {
-            await SendBatchFailureNotificationAsync(failures, cancellationToken);
+            await SendFailureNotificationsAsync(failures, cancellationToken);
         }
     }
 
-    private async Task SendBatchFailureNotificationAsync(List<(long EpisodeNumber, string TaskSid, FtpCallResult CallResult)> failures, CancellationToken cancellationToken)
+    private async Task SendFailureNotificationsAsync(List<(long EpisodeNumber, string TaskSid, FtpCallResult CallResult)> failures, CancellationToken cancellationToken)
     {
-        Logger.LogInformation($"--- Sending batch failure notification for {failures.Count} failed TCN calls ---");
+        Logger.LogInformation($"--- Sending failure notifications for {failures.Count} failed TCN calls ---");
 
         var paTeamDistributionList = _configuration.GetValue<string>("TcnFailureNotificationDistributionList")
             ?? throw new Exception("Missing required configuration: TcnFailureNotificationDistributionList");
 
         var toAddresses = paTeamDistributionList.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-        var outboundEmailReceivedEvent = new OutboundEmailReceived
+        foreach (var failure in failures)
         {
-            NavitusEpisodeId = failures[0].EpisodeNumber, // Use first episode as primary
-            Subject = "Unsuccessful Oral Notification(s)",
-            HtmlBody = BuildBatchFailureEmailBody(failures),
-            Sensitivity = 0,
-            ToEmailaddress = toAddresses,
-            CcEmailaddress = Array.Empty<string>(),
-            BccEmailaddress = Array.Empty<string>(),
-            DocumentId = Enumerable.Empty<string>()
-        };
-
-        await _eventBridgeClient.PutEventsAsync(new PutEventsRequest
-        {
-            Entries = new List<PutEventsRequestEntry>
+            try
             {
-                new()
+                var outboundEmailReceivedEvent = new OutboundEmailReceived
                 {
-                    Source = _eventSource,
-                    EventBusName = _eventBusName,
-                    DetailType = nameof(OutboundEmailReceived),
-                    Detail = JsonSerializer.Serialize(outboundEmailReceivedEvent, _jsonSerializerOptions)
-                }
-            }
-        }, cancellationToken);
+                    NavitusEpisodeId = failure.EpisodeNumber,
+                    Subject = "Unsuccessful Oral Notification",
+                    HtmlBody = BuildFailureEmailBody(failure.EpisodeNumber, failure.CallResult),
+                    Sensitivity = 0,
+                    ToEmailaddress = toAddresses,
+                    CcEmailaddress = Array.Empty<string>(),
+                    BccEmailaddress = Array.Empty<string>(),
+                    DocumentId = Enumerable.Empty<string>()
+                };
 
-        Logger.LogInformation($"--- TCN Batch Failure Notification Published for {failures.Count} episodes ---");
+                var request = outboundEmailReceivedEvent.MapToCreateEmailMetadataRequest();
+                await _umServiceClient.Episode_CreateEmailMetadataAsync(request, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, $"--- Failed to send failure notification for EpisodeNumber: {failure.EpisodeNumber} ---");
+            }
+        }
+
+        Logger.LogInformation($"--- TCN Failure Notifications Sent for {failures.Count} episodes ---");
     }
 
-    private static string BuildBatchFailureEmailBody(List<(long EpisodeNumber, string TaskSid, FtpCallResult CallResult)> failures)
+    private static string BuildFailureEmailBody(long episodeNumber, FtpCallResult callResult)
     {
-        var rows = new System.Text.StringBuilder();
-
-        foreach (var (episodeNumber, _, callResult) in failures)
-        {
-            var completedAt = callResult.LastAttemptedAt?.ToLocalTime().ToString("M/d/yyyy h:mm:ss tt") ?? "N/A";
-            rows.AppendLine($"            <tr>");
-            rows.AppendLine($"                <td>{callResult.BanjoCaseId ?? "N/A"}</td>");
-            rows.AppendLine($"                <td>{episodeNumber}</td>");
-            rows.AppendLine($"                <td>{callResult.MemberFirstName} {callResult.MemberLastName}</td>");
-            rows.AppendLine($"                <td>{completedAt}</td>");
-            rows.AppendLine($"            </tr>");
-        }
+        var completedAt = callResult.LastAttemptedAt?.ToLocalTime().ToString("M/d/yyyy h:mm:ss tt") ?? "N/A";
 
         return $@"
 <!DOCTYPE html>
@@ -191,7 +176,7 @@ public class TcnPollingService : ITcnPollingService
 </head>
 <body>
     <div class='content'>
-        <p>The following case(s) had unsuccessful oral notifications:</p>
+        <p>The following case had an unsuccessful oral notification:</p>
 
         <table>
             <tr>
@@ -200,7 +185,12 @@ public class TcnPollingService : ITcnPollingService
                 <th>Member Name</th>
                 <th>Phone call attempt date/time</th>
             </tr>
-{rows}
+            <tr>
+                <td>{callResult.BanjoCaseId ?? "N/A"}</td>
+                <td>{episodeNumber}</td>
+                <td>{callResult.MemberFirstName} {callResult.MemberLastName}</td>
+                <td>{completedAt}</td>
+            </tr>
         </table>
     </div>
 </body>

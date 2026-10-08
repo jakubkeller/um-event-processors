@@ -26,7 +26,6 @@ public class TcnPollingServiceTests
 
         _configuration.GetValue<string>("NavitusUtilizationManagementBaseURL").Returns("http://test-url.com");
         _configuration.GetValue<string>("IntegrationPriorAuthBaseURL").Returns("http://test-pa-url.com");
-        _configuration.GetValue<string>("UMEventBusArn").Returns("arn:aws:events:us-east-1:123456789012:event-bus/test-bus");
 
         _umServiceClient.CreateEpisodeNoteAsync(Arg.Any<CreateEpisodeNoteRequest>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(new ApiResponse<CreateEpisodeNoteResponse>(200, new Dictionary<string, IEnumerable<string>>(), new CreateEpisodeNoteResponse())));
@@ -97,7 +96,7 @@ public class TcnPollingServiceTests
                 {
                     CallResults = new List<IntegrationPriorAuth.FtpCallResult>
                     {
-                        new() { ShortResult = "Answered", LastAttemptedAt = DateTimeOffset.UtcNow, DurationSeconds = 60 }
+                        new() { EpisodeNumber = "100003", ShortResult = "Answered", LastAttemptedAt = DateTimeOffset.UtcNow, DurationSeconds = 60 }
                     }
                 })));
 
@@ -133,7 +132,7 @@ public class TcnPollingServiceTests
                 {
                     CallResults = new List<IntegrationPriorAuth.FtpCallResult>
                     {
-                        new() { ShortResult = "Pending" }
+                        new() { EpisodeNumber = "100004", ShortResult = "Pending" }
                     }
                 })));
 
@@ -173,7 +172,7 @@ public class TcnPollingServiceTests
                 {
                     CallResults = new List<IntegrationPriorAuth.FtpCallResult>
                     {
-                        new() { ShortResult = "Answered", LastAttemptedAt = DateTimeOffset.UtcNow, DurationSeconds = 30 }
+                        new() { EpisodeNumber = "100007", ShortResult = "Answered", LastAttemptedAt = DateTimeOffset.UtcNow, DurationSeconds = 30 }
                     }
                 })));
 
@@ -182,5 +181,157 @@ public class TcnPollingServiceTests
 
         // Assert - should still process the second call detail
         await _umServiceClient.Received(1).UpdateCallDetailAsync(Arg.Is<UpdateTcnCallDetailRequest>(r => r.TcnTaskSid == "task-success"), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task PollPendingCallDetailsAsync_WithFailureResult_ShouldCreateEmailMetadataDirectly()
+    {
+        // Arrange
+        var distributionListSection = Substitute.For<IConfigurationSection>();
+        distributionListSection.Value.Returns("pa-team@navitus.com");
+        _configuration.GetSection("TcnFailureNotificationDistributionList").Returns(distributionListSection);
+
+        var pendingDetails = new List<PendingTcnCallDetail>
+        {
+            new() { TcnTaskSid = "task-111", EpisodeNumber = 100008 }
+        };
+
+        _umServiceClient.GetPendingCallDetailsAsync(Arg.Any<int>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(new ApiResponse<GetPendingTcnCallDetailsResponse>(
+                200,
+                new Dictionary<string, IEnumerable<string>>(),
+                new GetPendingTcnCallDetailsResponse { PendingCallDetails = pendingDetails }
+            )));
+
+        _integrationPriorAuthServiceClient.GetFtpReportAsync("task-111", Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(new IntegrationPriorAuth.ApiResponse<IntegrationPriorAuth.FtpReportResult>(
+                200,
+                new Dictionary<string, IEnumerable<string>>(),
+                new IntegrationPriorAuth.FtpReportResult
+                {
+                    CallResults = new List<IntegrationPriorAuth.FtpCallResult>
+                    {
+                        new() { EpisodeNumber = "100008", ShortResult = "No Answer", LastAttemptedAt = DateTimeOffset.UtcNow, DurationSeconds = 0 }
+                    }
+                })));
+
+        _umServiceClient.Episode_CreateEmailMetadataAsync(Arg.Any<CreateEmailMetadataRequest>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(new ApiResponse(200, new Dictionary<string, IEnumerable<string>>())));
+
+        // Act
+        await _tcnPollingService.PollPendingCallDetailsAsync(10, CancellationToken.None);
+
+        // Assert
+        await _umServiceClient.Received(1).Episode_CreateEmailMetadataAsync(
+            Arg.Is<CreateEmailMetadataRequest>(r =>
+                r.NavitusEpisodeId == 100008 &&
+                r.Subject == "Unsuccessful Oral Notification" &&
+                r.Recipients.Contains("pa-team@navitus.com")),
+            Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task PollPendingCallDetailsAsync_WithMultipleFailures_ShouldSendSeparateEmailPerEpisode()
+    {
+        // Arrange
+        var distributionListSection = Substitute.For<IConfigurationSection>();
+        distributionListSection.Value.Returns("pa-team@navitus.com");
+        _configuration.GetSection("TcnFailureNotificationDistributionList").Returns(distributionListSection);
+
+        var pendingDetails = new List<PendingTcnCallDetail>
+        {
+            new() { TcnTaskSid = "task-201", EpisodeNumber = 100010 },
+            new() { TcnTaskSid = "task-202", EpisodeNumber = 100011 }
+        };
+
+        _umServiceClient.GetPendingCallDetailsAsync(Arg.Any<int>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(new ApiResponse<GetPendingTcnCallDetailsResponse>(
+                200,
+                new Dictionary<string, IEnumerable<string>>(),
+                new GetPendingTcnCallDetailsResponse { PendingCallDetails = pendingDetails }
+            )));
+
+        _integrationPriorAuthServiceClient.GetFtpReportAsync("task-201", Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(new IntegrationPriorAuth.ApiResponse<IntegrationPriorAuth.FtpReportResult>(
+                200,
+                new Dictionary<string, IEnumerable<string>>(),
+                new IntegrationPriorAuth.FtpReportResult
+                {
+                    CallResults = new List<IntegrationPriorAuth.FtpCallResult>
+                    {
+                        new() { EpisodeNumber = "100010", ShortResult = "Busy", LastAttemptedAt = DateTimeOffset.UtcNow, DurationSeconds = 0 }
+                    }
+                })));
+
+        _integrationPriorAuthServiceClient.GetFtpReportAsync("task-202", Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(new IntegrationPriorAuth.ApiResponse<IntegrationPriorAuth.FtpReportResult>(
+                200,
+                new Dictionary<string, IEnumerable<string>>(),
+                new IntegrationPriorAuth.FtpReportResult
+                {
+                    CallResults = new List<IntegrationPriorAuth.FtpCallResult>
+                    {
+                        new() { EpisodeNumber = "100011", ShortResult = "No Answer", LastAttemptedAt = DateTimeOffset.UtcNow, DurationSeconds = 0 }
+                    }
+                })));
+
+        _umServiceClient.Episode_CreateEmailMetadataAsync(Arg.Any<CreateEmailMetadataRequest>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(new ApiResponse(200, new Dictionary<string, IEnumerable<string>>())));
+
+        // Act
+        await _tcnPollingService.PollPendingCallDetailsAsync(10, CancellationToken.None);
+
+        // Assert - one email per failed episode, each referencing only its own episode
+        await _umServiceClient.Received(1).Episode_CreateEmailMetadataAsync(
+            Arg.Is<CreateEmailMetadataRequest>(r => r.NavitusEpisodeId == 100010 && !r.HtmlBody.Contains("100011")),
+            Arg.Any<CancellationToken>());
+        await _umServiceClient.Received(1).Episode_CreateEmailMetadataAsync(
+            Arg.Is<CreateEmailMetadataRequest>(r => r.NavitusEpisodeId == 100011 && !r.HtmlBody.Contains("100010")),
+            Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task PollPendingCallDetailsAsync_TwoContactsShareOneCampaignTaskSid_EachMatchedToOwnResult()
+    {
+        // Arrange - under the Lead Drip pattern, a single campaign TaskSid's report can contain
+        // results for every contact dropped into it. Blindly taking the first result (the old bug)
+        // would apply one contact's outcome to every pending detail sharing that TaskSid.
+        var pendingDetails = new List<PendingTcnCallDetail>
+        {
+            new() { TcnTaskSid = "shared-campaign-task", EpisodeNumber = 400001 },
+            new() { TcnTaskSid = "shared-campaign-task", EpisodeNumber = 400002 }
+        };
+
+        _umServiceClient.GetPendingCallDetailsAsync(Arg.Any<int>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(new ApiResponse<GetPendingTcnCallDetailsResponse>(
+                200,
+                new Dictionary<string, IEnumerable<string>>(),
+                new GetPendingTcnCallDetailsResponse { PendingCallDetails = pendingDetails }
+            )));
+
+        // Same report returned for both polls (same shared TaskSid), containing both contacts' results.
+        _integrationPriorAuthServiceClient.GetFtpReportAsync("shared-campaign-task", Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(new IntegrationPriorAuth.ApiResponse<IntegrationPriorAuth.FtpReportResult>(
+                200,
+                new Dictionary<string, IEnumerable<string>>(),
+                new IntegrationPriorAuth.FtpReportResult
+                {
+                    CallResults = new List<IntegrationPriorAuth.FtpCallResult>
+                    {
+                        new() { EpisodeNumber = "400001", ShortResult = "Answered", LastAttemptedAt = DateTimeOffset.UtcNow, DurationSeconds = 60 },
+                        new() { EpisodeNumber = "400002", ShortResult = "Busy", LastAttemptedAt = DateTimeOffset.UtcNow, DurationSeconds = 0 }
+                    }
+                })));
+
+        // Act
+        await _tcnPollingService.PollPendingCallDetailsAsync(10, CancellationToken.None);
+
+        // Assert - each episode gets its own result, not both getting the first one in the list
+        await _umServiceClient.Received(1).UpdateCallDetailAsync(
+            Arg.Is<UpdateTcnCallDetailRequest>(r => r.EpisodeNumber == 400001 && r.CallResult == "Answered"),
+            Arg.Any<CancellationToken>());
+        await _umServiceClient.Received(1).UpdateCallDetailAsync(
+            Arg.Is<UpdateTcnCallDetailRequest>(r => r.EpisodeNumber == 400002 && r.CallResult == "Busy"),
+            Arg.Any<CancellationToken>());
     }
 }

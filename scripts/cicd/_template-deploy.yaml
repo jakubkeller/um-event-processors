@@ -23,7 +23,7 @@ stages:
       pool: server
       steps:
       - task: ManualValidation@0
-        timeoutInMinutes: 1440 # task times out in 1 day
+        timeoutInMinutes: 1440
         inputs:
           notifyUsers: ${{ variables.pauseNotify }}
           instructions: 'Please resume the release in order to proceed.'
@@ -42,5 +42,36 @@ stages:
       runOnce:
         deploy:
           steps:
-          - script: echo "Placeholder deploy step"
-            displayName: 'Placeholder - Deploy'
+          - script: |
+              echo "Environment variables"
+              echo "====================="
+              env | sort
+            displayName: 'Display Environment Variables'
+
+          - task: ExtractFiles@1
+            inputs:
+              archiveFilePatterns: '$(PIPELINE.WORKSPACE)/$(RESOURCE_PIPELINE_NAME)/**/*.zip'
+              destinationFolder: '$(PIPELINE.WORKSPACE)/$(RESOURCE_PIPELINE_NAME)/$(ARTIFACT_NAME)'
+              cleanDestinationFolder: false
+              overwriteExistingFiles: true
+            displayName: 'Extract Zipped Artifact'
+
+          - task: AWSShellScript@1
+            displayName: "CDK Synth"
+            inputs:
+              awsCredentials: ${{ variables.SERVICE_CONNECTION }}
+              regionName: $(REGION_NAME)
+              scriptType: filePath
+              filePath: '$(INFRA_SCRIPTS_PATH)/synth.sh'
+              workingDirectory: "$(PIPELINE.WORKSPACE)/$(RESOURCE_PIPELINE_NAME)/$(ARTIFACT_NAME)"
+              disableAutoCwd: true
+
+          - task: AWSShellScript@1
+            displayName: 'CDK Deploy'
+            inputs:
+              awsCredentials: ${{ variables.SERVICE_CONNECTION }}
+              regionName: $(REGION_NAME)
+              scriptType: filePath
+              filePath: '$(INFRA_SCRIPTS_PATH)/deploy.sh'
+              workingDirectory: "$(PIPELINE.WORKSPACE)/$(RESOURCE_PIPELINE_NAME)/$(ARTIFACT_NAME)"
+              disableAutoCwd: true

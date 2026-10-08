@@ -94,7 +94,7 @@ namespace UnitTests
                 ModifiedBy = "Test-ModifiedBy",
                 ExternalRelatedPriorAuthEpisodeId = "RelatedTran-123",
                 NavitusRelatedPriorAuthEpisodeId = 1,
-                GrievanceAndAppealsCaseType = GrievanceAndAppealsCaseType.Grievance,
+                GrievanceAndAppealsCaseType = GrievanceAndAppealsCaseType.Appeal,
                 GrievanceAndAppealsStatus = GrievanceAndAppealsStatus.Approved
             };
         }

@@ -68,6 +68,8 @@ public static class GrievanceAndAppealsTemplateMapper
             nameof(GrievanceAndAppealsStatus.Denied) => "Denied",
             nameof(GrievanceAndAppealsStatus.ReceivedInError) => "Received In Error",
             nameof(GrievanceAndAppealsStatus.Abandoned) => "Abandoned",
+            nameof(GrievanceAndAppealsStatus.Resolved) => "Resolved",
+            nameof(GrievanceAndAppealsStatus.Unresolved) => "Unresolved",
             _ => "In Progress",
         };
         var result = $"{formattedStatus} in Banjo";
@@ -273,6 +275,28 @@ public static class GrievanceAndAppealsTemplateMapper
                 result += MapGrievanceAndAppealsTextSegments(noteSegments);
                 break;
             }
+            case nameof(GrievanceAndAppealsStatus.Resolved):
+            {
+                var segments = (new[] { ("Reason", updatedEpisode.Reason), ("Description", updatedEpisode.DecisionLanguage) })
+                    .Where(s => !string.IsNullOrWhiteSpace(s.Item2))
+                    .ToList();
+                noteSegments.AddRange(segments);
+
+                result = MapGenericGrievanceAndAppealsTextSegments(updatedEpisode, "Resolved");
+                result += MapGrievanceAndAppealsTextSegments(noteSegments);
+                break;
+            }
+            case nameof(GrievanceAndAppealsStatus.Unresolved):
+            {
+                var segments = (new[] { ("Reason", updatedEpisode.Reason), ("Description", updatedEpisode.DecisionLanguage) })
+                    .Where(s => !string.IsNullOrWhiteSpace(s.Item2))
+                    .ToList();
+                noteSegments.AddRange(segments);
+
+                result = MapGenericGrievanceAndAppealsTextSegments(updatedEpisode, "Unresolved");
+                result += MapGrievanceAndAppealsTextSegments(noteSegments);
+                break;
+            }
             default:
             {
                 result = MapGenericGrievanceAndAppealsTextSegments(updatedEpisode, "In Progress");
@@ -292,21 +316,50 @@ public static class GrievanceAndAppealsTemplateMapper
 
     private static string MapGenericGrievanceAndAppealsTextSegments(EpisodeBase episode, string outcome)
     {
-        var segments = (
-            new[]
-            {
-                ("Type", episode.GrievanceAndAppealsCaseType.ToString()),
-                ("Banjo Related PA Case ID", episode.ExternalRelatedPriorAuthEpisodeId),
-                ("Drug", episode.DrugDescription),
-                ("Outcome", outcome),
-                ("Banjo Case ID", episode.ExternalEpisodeId),
-                ("Due", episode.DueDateTime.ToNCRxDateTime()),
-                ("Finalized", episode.FinalizationDateTime.ToNCRxDateTime()),
-                ("Appeal Type", MapGrievanceAndAppealsType(episode))
-            }
-        )
-            .Where(s => !string.IsNullOrWhiteSpace(s.Item2))
-            .ToList();
+        var grievanceCaseTypes = new string[]
+        {
+            nameof(GrievanceAndAppealsCaseType.Grievance),
+            nameof(GrievanceAndAppealsCaseType.FormalComplaint),
+            nameof(GrievanceAndAppealsCaseType.Inquiry),
+            nameof(GrievanceAndAppealsCaseType.MedDGriev),
+            nameof(GrievanceAndAppealsCaseType.BBBComplaint),
+            nameof(GrievanceAndAppealsCaseType.OCIComplaint),
+            nameof(GrievanceAndAppealsCaseType.ComplaintAssist),
+            nameof(GrievanceAndAppealsCaseType.CTM),
+            nameof(GrievanceAndAppealsCaseType.TexasMedicaidProviderComplaint),
+            nameof(GrievanceAndAppealsCaseType.URACComplaint)
+        };
+        var isGrievanceCaseType = grievanceCaseTypes.Contains(episode.GrievanceAndAppealsCaseType.ToString());
+
+        var segments = isGrievanceCaseType
+            ? (
+                new[]
+                {
+                    ("Type", episode.GrievanceAndAppealsCaseType.ToString()),
+                    ("Drug", episode.DrugDescription),
+                    ("Outcome", outcome),
+                    ("Banjo Case ID", episode.ExternalEpisodeId),
+                    ("Due", episode.DueDateTime.ToNCRxDateTime()),
+                    ("Finalized", episode.FinalizationDateTime.ToNCRxDateTime())
+                }
+            )
+                .Where(s => !string.IsNullOrWhiteSpace(s.Item2))
+                .ToList()
+            : (
+                new[]
+                {
+                    ("Type", episode.GrievanceAndAppealsCaseType.ToString()),
+                    ("Banjo Related PA Case ID", episode.ExternalRelatedPriorAuthEpisodeId),
+                    ("Drug", episode.DrugDescription),
+                    ("Outcome", outcome),
+                    ("Banjo Case ID", episode.ExternalEpisodeId),
+                    ("Due", episode.DueDateTime.ToNCRxDateTime()),
+                    ("Finalized", episode.FinalizationDateTime.ToNCRxDateTime()),
+                    ("Appeal Type", MapGrievanceAndAppealsType(episode))
+                }
+            )
+                .Where(s => !string.IsNullOrWhiteSpace(s.Item2))
+                .ToList();
 
         var noteSegments = new List<(string type, string? value)>();
         noteSegments.AddRange(segments);

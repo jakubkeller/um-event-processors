@@ -352,6 +352,21 @@ namespace ServiceClients.Navitus
         System.Threading.Tasks.Task<ApiResponse<EpisodeResponseBaseUMResponse>> EpisodeByIdAsync(GetEpisodeByIdRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
+        /// Get Episode by External Id (e.g. Banjo Case Id)
+        /// </summary>
+        /// <returns>Get Episode Record</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ApiResponse<EpisodeResponseBaseUMResponse>> EpisodeByExternalIdAsync(GetEpisodeByExternalIdRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// Get Episode by External Id (e.g. Banjo Case Id)
+        /// </summary>
+        /// <returns>Get Episode Record</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ApiResponse<EpisodeResponseBaseUMResponse>> EpisodeByExternalIdAsync(GetEpisodeByExternalIdRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <summary>
         /// Misc Handler Lookup
         /// </summary>
         /// <remarks>
@@ -419,7 +434,7 @@ namespace ServiceClients.Navitus
         /// </summary>
         /// <returns>RTPB receive success response</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ApiResponse> ReceiveAsync(string body);
+        System.Threading.Tasks.Task<ApiResponse<string>> ReceiveAsync(string body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -427,7 +442,41 @@ namespace ServiceClients.Navitus
         /// </summary>
         /// <returns>RTPB receive success response</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ApiResponse> ReceiveAsync(string body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ApiResponse<string>> ReceiveAsync(string body, System.Threading.CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Get a TCN campaign for a specific date.
+        /// <br/>Returns the campaign TaskSid if one exists for the given date.
+        /// </summary>
+        /// <returns>Get campaign success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ApiResponse<TcnCampaignResponse>> GetCampaignAsync(System.DateTimeOffset? campaignDate);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// Get a TCN campaign for a specific date.
+        /// <br/>Returns the campaign TaskSid if one exists for the given date.
+        /// </summary>
+        /// <returns>Get campaign success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ApiResponse<TcnCampaignResponse>> GetCampaignAsync(System.DateTimeOffset? campaignDate, System.Threading.CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Create a TCN campaign for a specific date.
+        /// <br/>If a campaign already exists for the date, returns the existing campaign (first write wins).
+        /// </summary>
+        /// <returns>Create or get campaign success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ApiResponse<TcnCampaignResponse>> CreateCampaignAsync(CreateTcnCampaignRequest body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// Create a TCN campaign for a specific date.
+        /// <br/>If a campaign already exists for the date, returns the existing campaign (first write wins).
+        /// </summary>
+        /// <returns>Create or get campaign success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ApiResponse<TcnCampaignResponse>> CreateCampaignAsync(CreateTcnCampaignRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Create a TCN call detail record.
@@ -2435,6 +2484,94 @@ namespace ServiceClients.Navitus
         }
 
         /// <summary>
+        /// Get Episode by External Id (e.g. Banjo Case Id)
+        /// </summary>
+        /// <returns>Get Episode Record</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<ApiResponse<EpisodeResponseBaseUMResponse>> EpisodeByExternalIdAsync(GetEpisodeByExternalIdRequest body)
+        {
+            return EpisodeByExternalIdAsync(body, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// Get Episode by External Id (e.g. Banjo Case Id)
+        /// </summary>
+        /// <returns>Get Episode Record</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<ApiResponse<EpisodeResponseBaseUMResponse>> EpisodeByExternalIdAsync(GetEpisodeByExternalIdRequest body, System.Threading.CancellationToken cancellationToken)
+        {
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = await CreateHttpRequestMessageAsync(cancellationToken).ConfigureAwait(false))
+                {
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                    if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
+                    // Operation Path: "episode/getbyexternalid"
+                    urlBuilder_.Append("episode/getbyexternalid");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<EpisodeResponseBaseUMResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return new ApiResponse<EpisodeResponseBaseUMResponse>(status_, headers_, objectResponse_.Object);
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <summary>
         /// Misc Handler Lookup
         /// </summary>
         /// <remarks>
@@ -2743,7 +2880,7 @@ namespace ServiceClients.Navitus
         /// </summary>
         /// <returns>RTPB receive success response</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ApiResponse> ReceiveAsync(string body)
+        public virtual System.Threading.Tasks.Task<ApiResponse<string>> ReceiveAsync(string body)
         {
             return ReceiveAsync(body, System.Threading.CancellationToken.None);
         }
@@ -2754,7 +2891,7 @@ namespace ServiceClients.Navitus
         /// </summary>
         /// <returns>RTPB receive success response</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ApiResponse> ReceiveAsync(string body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ApiResponse<string>> ReceiveAsync(string body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -2769,6 +2906,7 @@ namespace ServiceClients.Navitus
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/xml");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/xml"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                     if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
@@ -2800,7 +2938,218 @@ namespace ServiceClients.Navitus
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            return new ApiResponse(status_, headers_);
+                            var objectResponse_ = await ReadObjectResponseAsync<string>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return new ApiResponse<string>(status_, headers_, objectResponse_.Object);
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Get a TCN campaign for a specific date.
+        /// <br/>Returns the campaign TaskSid if one exists for the given date.
+        /// </summary>
+        /// <returns>Get campaign success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<ApiResponse<TcnCampaignResponse>> GetCampaignAsync(System.DateTimeOffset? campaignDate)
+        {
+            return GetCampaignAsync(campaignDate, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// Get a TCN campaign for a specific date.
+        /// <br/>Returns the campaign TaskSid if one exists for the given date.
+        /// </summary>
+        /// <returns>Get campaign success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<ApiResponse<TcnCampaignResponse>> GetCampaignAsync(System.DateTimeOffset? campaignDate, System.Threading.CancellationToken cancellationToken)
+        {
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = await CreateHttpRequestMessageAsync(cancellationToken).ConfigureAwait(false))
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                    if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
+                    // Operation Path: "tcn/campaign"
+                    urlBuilder_.Append("tcn/campaign");
+                    urlBuilder_.Append('?');
+                    if (campaignDate != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("campaignDate")).Append('=').Append(System.Uri.EscapeDataString(campaignDate.Value.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    urlBuilder_.Length--;
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<TcnCampaignResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return new ApiResponse<TcnCampaignResponse>(status_, headers_, objectResponse_.Object);
+                        }
+                        else
+                        if (status_ == 401)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Unauthorized", status_, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == 404)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("No campaign found for the specified date", status_, responseText_, headers_, null);
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Create a TCN campaign for a specific date.
+        /// <br/>If a campaign already exists for the date, returns the existing campaign (first write wins).
+        /// </summary>
+        /// <returns>Create or get campaign success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<ApiResponse<TcnCampaignResponse>> CreateCampaignAsync(CreateTcnCampaignRequest body)
+        {
+            return CreateCampaignAsync(body, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// Create a TCN campaign for a specific date.
+        /// <br/>If a campaign already exists for the date, returns the existing campaign (first write wins).
+        /// </summary>
+        /// <returns>Create or get campaign success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<ApiResponse<TcnCampaignResponse>> CreateCampaignAsync(CreateTcnCampaignRequest body, System.Threading.CancellationToken cancellationToken)
+        {
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = await CreateHttpRequestMessageAsync(cancellationToken).ConfigureAwait(false))
+                {
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                    if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
+                    // Operation Path: "tcn/campaign"
+                    urlBuilder_.Append("tcn/campaign");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<TcnCampaignResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return new ApiResponse<TcnCampaignResponse>(status_, headers_, objectResponse_.Object);
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Invalid request", status_, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == 401)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Unauthorized", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -4436,6 +4785,22 @@ namespace ServiceClients.Navitus
 
     }
 
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class CreateTcnCampaignRequest
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("campaignDate")]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        [System.Text.Json.Serialization.JsonConverter(typeof(DateFormatConverter))]
+        public System.DateTimeOffset CampaignDate { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("taskSid")]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        [System.ComponentModel.DataAnnotations.StringLength(100)]
+        public string TaskSid { get; set; }
+
+    }
+
     /// <summary>
     /// Properties relating to a given prescription(s) / drug(s) for a given adjudication.
     /// </summary>
@@ -4971,6 +5336,19 @@ namespace ServiceClients.Navitus
 
         [System.Text.Json.Serialization.JsonPropertyName("items")]
         public System.Collections.Generic.ICollection<GetAdjudicationOverrideDetailedResponse> Items { get; set; }
+
+    }
+
+    /// <summary>
+    /// Get Prior Authorization Episode By External Id Request
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class GetEpisodeByExternalIdRequest
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("externalEpisodeId")]
+        [System.ComponentModel.DataAnnotations.Required]
+        public string ExternalEpisodeId { get; set; }
 
     }
 
@@ -5621,6 +5999,18 @@ namespace ServiceClients.Navitus
         [System.Runtime.Serialization.EnumMember(Value = @"IREAutoForward")]
         IREAutoForward = 14,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"ComplaintAssist")]
+        ComplaintAssist = 15,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CTM")]
+        CTM = 16,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TexasMedicaidProviderComplaint")]
+        TexasMedicaidProviderComplaint = 17,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"URACComplaint")]
+        URACComplaint = 18,
+
     }
 
     /// <summary>
@@ -5734,6 +6124,9 @@ namespace ServiceClients.Navitus
 
         [System.Runtime.Serialization.EnumMember(Value = @"Resolved")]
         Resolved = 15,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Unresolved")]
+        Unresolved = 16,
 
     }
 
@@ -5895,7 +6288,7 @@ namespace ServiceClients.Navitus
     }
 
     /// <summary>
-    /// [Required Field] Standardized reason code for the given adjudication. Can be one of the following: "OI", "NOI", "ZSEC", "ZSEP", "ZPAC", "ZPAP", "ZFEC", "ZFEP", "ZQLC", "ZQLP", "ZCFC", "ZCFP", "ZREC", "ZREP", "ZCEC", "ZCEP", "ZPBC", "ZPBP", "ZARC", "ZARP", "ZAPU", "ZAPO", "ZFEA", "ZPAA", "ZSEA", "ZFXC","ZFYC","ZFZC","ZFXP","ZFYP","ZFZP","ZMCW","ZMCD","ZAPI","ZINV", "BATCH", "C", "CA", "CC", "CD", "CE", "CO", "COB", "COC", "CONTRA", "COXII", "DC", "DI", "DS", "FERTILITY", "GA", "MC", "MVA", "ND", "NF", "OL", "OP", "OR", "OW", "PA", "PB", "RF", "RM", "RR", "SO", "TF", "V", "ZCSR", "ZQLA"
+    /// [Required Field] Standardized reason code for the given adjudication. Can be one of the following: "OI", "NOI", "ZSEC", "ZSEP", "ZPAC", "ZPAP", "ZFEC", "ZFEP", "ZQLC", "ZQLP", "ZCFC", "ZCFP", "ZREC", "ZREP", "ZCEC", "ZCEP", "ZPBC", "ZPBP", "ZARC", "ZARP", "ZAPU", "ZAPO", "ZFEA", "ZPAA", "ZSEA", "ZFXC","ZFYC","ZFZC","ZFXP","ZFYP","ZFZP","ZMCW","ZMCD","ZAPI","ZINV", "BATCH", "C", "CA", "CC", "CD", "CE", "CO", "COB", "COC", "CP", "CONTRA", "COXII", "DC", "DI", "DS", "FERTILITY", "GA", "MC", "MVA", "ND", "NF", "OL", "OP", "OR", "OW", "PA", "PB", "RF", "RM", "RR", "SO", "TF", "V", "ZCSR", "ZQLA"
     /// <br/>. (A.K.A. Navitus PA Type)
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -6034,83 +6427,99 @@ namespace ServiceClients.Navitus
         [System.Runtime.Serialization.EnumMember(Value = @"COC")]
         COC = 43,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"CP")]
+        CP = 44,
+
         [System.Runtime.Serialization.EnumMember(Value = @"CONTRA")]
-        CONTRA = 44,
+        CONTRA = 45,
 
         [System.Runtime.Serialization.EnumMember(Value = @"COXII")]
-        COXII = 45,
+        COXII = 46,
 
         [System.Runtime.Serialization.EnumMember(Value = @"DC")]
-        DC = 46,
+        DC = 47,
 
         [System.Runtime.Serialization.EnumMember(Value = @"DI")]
-        DI = 47,
+        DI = 48,
 
         [System.Runtime.Serialization.EnumMember(Value = @"DS")]
-        DS = 48,
+        DS = 49,
 
         [System.Runtime.Serialization.EnumMember(Value = @"FERTILITY")]
-        FERTILITY = 49,
+        FERTILITY = 50,
 
         [System.Runtime.Serialization.EnumMember(Value = @"GA")]
-        GA = 50,
+        GA = 51,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MC")]
-        MC = 51,
+        MC = 52,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MVA")]
-        MVA = 52,
+        MVA = 53,
 
         [System.Runtime.Serialization.EnumMember(Value = @"ND")]
-        ND = 53,
+        ND = 54,
 
         [System.Runtime.Serialization.EnumMember(Value = @"NF")]
-        NF = 54,
+        NF = 55,
 
         [System.Runtime.Serialization.EnumMember(Value = @"OL")]
-        OL = 55,
+        OL = 56,
 
         [System.Runtime.Serialization.EnumMember(Value = @"OP")]
-        OP = 56,
+        OP = 57,
 
         [System.Runtime.Serialization.EnumMember(Value = @"OR")]
-        OR = 57,
+        OR = 58,
 
         [System.Runtime.Serialization.EnumMember(Value = @"OW")]
-        OW = 58,
+        OW = 59,
 
         [System.Runtime.Serialization.EnumMember(Value = @"PA")]
-        PA = 59,
+        PA = 60,
 
         [System.Runtime.Serialization.EnumMember(Value = @"PB")]
-        PB = 60,
+        PB = 61,
 
         [System.Runtime.Serialization.EnumMember(Value = @"RF")]
-        RF = 61,
+        RF = 62,
 
         [System.Runtime.Serialization.EnumMember(Value = @"RM")]
-        RM = 62,
+        RM = 63,
 
         [System.Runtime.Serialization.EnumMember(Value = @"RR")]
-        RR = 63,
+        RR = 64,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SO")]
-        SO = 64,
+        SO = 65,
 
         [System.Runtime.Serialization.EnumMember(Value = @"TF")]
-        TF = 65,
+        TF = 66,
 
         [System.Runtime.Serialization.EnumMember(Value = @"V")]
-        V = 66,
+        V = 67,
 
         [System.Runtime.Serialization.EnumMember(Value = @"ZCSR")]
-        ZCSR = 67,
+        ZCSR = 68,
 
         [System.Runtime.Serialization.EnumMember(Value = @"ZQLA")]
-        ZQLA = 68,
+        ZQLA = 69,
 
         [System.Runtime.Serialization.EnumMember(Value = @"NotSet")]
-        NotSet = 69,
+        NotSet = 70,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class TcnCampaignResponse
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("campaignDate")]
+        [System.Text.Json.Serialization.JsonConverter(typeof(DateFormatConverter))]
+        public System.DateTimeOffset CampaignDate { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("taskSid")]
+        public string TaskSid { get; set; }
 
     }
 
@@ -6780,6 +7189,9 @@ namespace ServiceClients.Navitus
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         [System.ComponentModel.DataAnnotations.StringLength(50)]
         public string TcnTaskSid { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("episodeNumber")]
+        public long EpisodeNumber { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("callResult")]
         [System.ComponentModel.DataAnnotations.StringLength(50)]

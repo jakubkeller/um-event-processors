@@ -67,7 +67,7 @@ public static class GrievanceAndAppealsTemplateMapper
             nameof(GrievanceAndAppealsStatus.Approved) => "Approved",
             nameof(GrievanceAndAppealsStatus.Denied) => "Denied",
             nameof(GrievanceAndAppealsStatus.ReceivedInError) => "Received In Error",
-            nameof(GrievanceAndAppealsStatus.Abandoned) => "Abandoned",
+            nameof(GrievanceAndAppealsStatus.Abandoned) => "Cancelled",
             nameof(GrievanceAndAppealsStatus.Resolved) => "Resolved",
             nameof(GrievanceAndAppealsStatus.Unresolved) => "Unresolved",
             _ => "In Progress",
@@ -271,7 +271,7 @@ public static class GrievanceAndAppealsTemplateMapper
                     .ToList();
                 noteSegments.AddRange(segments);
 
-                result = MapGenericGrievanceAndAppealsTextSegments(updatedEpisode, "Abandoned");
+                result = MapGenericGrievanceAndAppealsTextSegments(updatedEpisode, "Cancelled");
                 result += MapGrievanceAndAppealsTextSegments(noteSegments);
                 break;
             }

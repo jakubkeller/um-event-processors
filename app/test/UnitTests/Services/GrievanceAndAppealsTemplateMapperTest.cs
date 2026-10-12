@@ -75,8 +75,8 @@ public class GrievanceAndAppealsTemplateMapperTest : BaseTests
     )]
     [InlineData(
         GrievanceAndAppealsStatus.Abandoned,
-        "Abandoned in Banjo",
-        "Type: Appeal\r\nBanjo Related PA Case ID: RelatedTran-123\r\nDrug: Test-DrugDescription\r\nOutcome: Abandoned\r\nBanjo Case ID: Transaction-123\r\nFinalized: 02/01/2000 18:00:00 CT\r\nReason: Test-Reason\r\nDescription: Test-DecisionLanguage"
+        "Cancelled in Banjo",
+        "Type: Appeal\r\nBanjo Related PA Case ID: RelatedTran-123\r\nDrug: Test-DrugDescription\r\nOutcome: Cancelled\r\nBanjo Case ID: Transaction-123\r\nFinalized: 02/01/2000 18:00:00 CT\r\nReason: Test-Reason\r\nDescription: Test-DecisionLanguage"
     )]
     [InlineData(
         GrievanceAndAppealsStatus.InProgress,

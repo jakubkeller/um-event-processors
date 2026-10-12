@@ -25,6 +25,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SendEmailProcessor", "src\S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailProcessor", "src\EmailProcessor\EmailProcessor.csproj", "{EDF400E0-EA36-4C6C-A911-C0D6A9EA5C55}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcnOralNotificationProcessor", "src\TcnOralNotificationProcessor\TcnOralNotificationProcessor.csproj", "{F450F497-EC7B-4D3B-B560-EC9EAE3868B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcnPollingProcessor", "src\TcnPollingProcessor\TcnPollingProcessor.csproj", "{71524DAA-7511-4F1F-A7D2-28848072DDD1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,7 +71,14 @@ Global
 		{EDF400E0-EA36-4C6C-A911-C0D6A9EA5C55}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDF400E0-EA36-4C6C-A911-C0D6A9EA5C55}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDF400E0-EA36-4C6C-A911-C0D6A9EA5C55}.Release|Any CPU.Build.0 = Release|Any CPU
-
+		{F450F497-EC7B-4D3B-B560-EC9EAE3868B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F450F497-EC7B-4D3B-B560-EC9EAE3868B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F450F497-EC7B-4D3B-B560-EC9EAE3868B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F450F497-EC7B-4D3B-B560-EC9EAE3868B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71524DAA-7511-4F1F-A7D2-28848072DDD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71524DAA-7511-4F1F-A7D2-28848072DDD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71524DAA-7511-4F1F-A7D2-28848072DDD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71524DAA-7511-4F1F-A7D2-28848072DDD1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,7 +92,8 @@ Global
 		{6D7312CC-E53C-4E97-B284-65F9138779E8} = {8999E16C-B64C-43BA-ADD5-50397A5906C5}
 		{FB028267-86EF-43C8-AFC3-AF324CFAEFD4} = {8999E16C-B64C-43BA-ADD5-50397A5906C5}
 		{EDF400E0-EA36-4C6C-A911-C0D6A9EA5C55} = {8999E16C-B64C-43BA-ADD5-50397A5906C5}
-
+		{F450F497-EC7B-4D3B-B560-EC9EAE3868B7} = {8999E16C-B64C-43BA-ADD5-50397A5906C5}
+		{71524DAA-7511-4F1F-A7D2-28848072DDD1} = {8999E16C-B64C-43BA-ADD5-50397A5906C5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {202A038C-D62E-4341-9A7D-2F3A22ED462E}

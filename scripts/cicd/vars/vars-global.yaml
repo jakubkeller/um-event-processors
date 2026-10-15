@@ -32,7 +32,7 @@ variables:
         value: "$(Build.ArtifactStagingDirectory)"
       - name: TESTRESULT_PATH
         value: "$(Agent.TempDirectory)/$(Build.BuildId)"
-								
+
   - ${{ if eq(parameters.tpl_type, 'Deploy') }}:
       - name: RESOURCE_PIPELINE_NAME
         value: "UMEventProcessorsBuild"

@@ -24,11 +24,15 @@ variables:
         value: "$(LOCAL_PATH)scripts/cicd/infra"
       - name: EVENT_PROCESSORS_SCRIPTS_PATH
         value: "$(LOCAL_PATH)scripts/cicd/event-processors"
-      - name: TESTRESULT_PATH
-        value: "$(Agent.TempDirectory)/$(Build.BuildId)"
       - name: PUBLISH_PATH
         value: "$(LOCAL_PATH)dist"
-
+      - name: BUILD_PATH
+        value: "$(LOCAL_PATH)dist"
+      - name: ARTIFACTSTAGING_PATH
+        value: "$(Build.ArtifactStagingDirectory)"
+      - name: TESTRESULT_PATH
+        value: "$(Agent.TempDirectory)/$(Build.BuildId)"
+								
   - ${{ if eq(parameters.tpl_type, 'Deploy') }}:
       - name: RESOURCE_PIPELINE_NAME
         value: "UMEventProcessorsBuild"

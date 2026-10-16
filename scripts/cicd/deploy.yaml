@@ -38,7 +38,7 @@ stages:
     tpl_Environment: "prod"
     tpl_DependsOn: "stage"
 
-- template: finish-branch-template.yml@templates
+- template: gitflow/finish-branch-template.yml@templates
   parameters:
     srcBranch: ${{ variables['Build.SourceBranch'] }}
     srcVersion: ${{ variables['Build.SourceBranchName'] }}

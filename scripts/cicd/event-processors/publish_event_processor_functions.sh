@@ -14,6 +14,7 @@ processors=(
     EmailProcessor
     TcnOralNotificationProcessor
     TcnPollingProcessor
+    RtpbReceiveProcessor
 )
 
 for processor in "${processors[@]}"; do

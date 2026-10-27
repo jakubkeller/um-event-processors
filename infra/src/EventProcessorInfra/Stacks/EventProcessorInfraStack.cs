@@ -5,6 +5,7 @@ using Amazon.CDK.AWS.Events.Targets;
 using Amazon.CDK.AWS.IAM;
 using Amazon.CDK.AWS.Lambda.EventSources;
 using Amazon.CDK.AWS.SSM;
+using Amazon.CDK.AWS.S3;
 using Constructs;
 using UM.Infra.Base;
 using UM.Infra.Base.Config;
@@ -54,6 +55,7 @@ public class EventProcessorInfraStack : BaseStack
         AddSendEmailProcessor(id, infraConfig, isSandbox, source, umEventBus, umApiCustomBaseURL, databaseCredentialSet, [umLambdasSG]);
         AddTcnOralNotificationProcessor(id, infraConfig, isSandbox, source, umEventBus, umApiCustomBaseURL, [umLambdasSG]);
         AddTcnPollingProcessor(id, infraConfig, isSandbox, umApiCustomBaseURL, [umLambdasSG]);
+        AddRtpbReceiveProcessor(id, infraConfig, isSandbox, source, umEventBus, [umLambdasSG]);
 
         _ = new EventProcessor(
             this,
@@ -577,6 +579,124 @@ public class EventProcessorInfraStack : BaseStack
                         RetryAttempts = 0,
                     })
                 ]
+            }
+        );
+    }
+
+    /// <summary>
+    /// RTPB Receive Processor (PBI 292733): consumes RTPBReceiveEvents from the UM event bus and
+    /// writes a single JSON object per transaction to the RTPB reporting S3 bucket for the Data Lakehouse.
+    /// S3-write only — no UM API / app-client access required.
+    /// </summary>
+    private void AddRtpbReceiveProcessor(
+        string id,
+        Environment infraConfig,
+        bool isSandbox,
+        string source,
+        IEventBus umEventBus,
+        ISecurityGroup[]? securityGroups
+    )
+    {
+        var reportingBucket = new ReportingBucket(
+            this,
+            "RtpbReportingBucket",
+            new ReportingBucketProps() { IsSandbox = isSandbox }
+        );
+
+        var lambda = new FunctionWithRole(
+            this,
+            "RtpbReceiveLambda",
+            new FunctionWithRoleProps()
+            {
+                IsSandbox = isSandbox,
+                AssetPath = "../dist/event-processors/RtpbReceiveProcessor/release/publish/",
+                Handler = "RtpbReceiveProcessor::RtpbReceiveProcessor.Function::FunctionHandler",
+                Environment = new Dictionary<string, string>()
+                {
+                    { "RTPB_REPORTING_BUCKET_NAME", reportingBucket.Bucket.BucketName },
+                },
+                MemorySize = 256,
+                VpcId = infraConfig.VpcId,
+                Timeout = 120,
+                AllowAppClientAccess = false,
+                AppRoot = AppRoot,
+                SecurityGroups = securityGroups,
+            }
+        );
+
+        var queue = new QueueWithDLQ(
+            this,
+            "RtpbReceiveQueue",
+            new QueueWithDLQProps()
+            {
+                Fifo = false,
+                MaxReceiveCount = isSandbox ? 1 : 10,
+                VisibilityTimeoutSeconds = isSandbox ? 120 : 900,
+                RetentionPeriodDays = 14,
+            }
+        );
+
+        queue.MainQueue.GrantConsumeMessages(lambda.Role);
+
+        // Allow the processor to write RTPB transaction objects (and use the bucket's KMS key).
+        reportingBucket.Bucket.GrantPut(lambda.Role);
+
+        Amazon.CDK.Tags.Of(reportingBucket).Add("navitus:dr", "yes");
+
+        reportingBucket.Bucket.AddLifecycleRule(
+            new LifecycleRule
+            {
+                Id = "RtpbReceiveLifecycleRule",
+                Enabled = true,
+                Transitions =
+                [
+                    new Transition { StorageClass = StorageClass.INTELLIGENT_TIERING, TransitionAfter = Duration.Days(30) },
+                    new Transition { StorageClass = StorageClass.GLACIER_INSTANT_RETRIEVAL, TransitionAfter = Duration.Days(365) }
+                ],
+                NoncurrentVersionTransitions =
+                [
+                    new NoncurrentVersionTransition
+                    {
+                        StorageClass = StorageClass.GLACIER_INSTANT_RETRIEVAL,
+                        TransitionAfter = Duration.Days(30),
+                        NoncurrentVersionsToRetain = 10,
+                    },
+                    new NoncurrentVersionTransition
+                    {
+                        StorageClass = StorageClass.DEEP_ARCHIVE,
+                        TransitionAfter = Duration.Days(365),
+                        NoncurrentVersionsToRetain = 10,
+                    }
+                ]
+            }
+        );
+
+        lambda.LambdaFunction.AddEventSource(
+            new SqsEventSource(
+                queue.MainQueue,
+                new SqsEventSourceProps()
+                {
+                    BatchSize = 10,
+                    ReportBatchItemFailures = true,
+                    MaxBatchingWindow = Duration.Seconds(1),
+                    MaxConcurrency = 50,
+                }
+            )
+        );
+
+        _ = new Rule(
+            this,
+            "RtpbReceiveEventRule",
+            new RuleProps()
+            {
+                Enabled = true,
+                EventBus = umEventBus,
+                Targets =
+                [
+                    new SqsQueue(queue.MainQueue, new SqsQueueProps() { MessageGroupId = queue.MainQueue.Fifo ? id : null }),
+                ],
+                Description = "Rule to route RTPBReceiveEvent events to RtpbReceiveProcessor",
+                EventPattern = new EventPattern { Source = [source], DetailType = ["RtpbReceiveEvent"] }
             }
         );
     }

@@ -1,4 +1,5 @@
 using Amazon.CDK;
+using Amazon.CDK.AWS.IAM;
 using Amazon.CDK.AWS.KMS;
 using Amazon.CDK.AWS.S3;
 using Constructs;
@@ -7,11 +8,10 @@ namespace UM.Infra.EventProcessors.Constructs;
 
 public class ReportingBucketProps
 {
-    /// <summary>
-    /// Optional existing KMS key alias to encrypt the bucket with. When null, the shared SQS key
-    /// (alias/SQSKey) is reused to satisfy the "use existing KMS" requirement.
-    /// </summary>
-    public string? EncryptionKeyAlias { get; set; }
+    public string BucketName { get; set; } = default!;
+
+    // Cross-account reader roles granted read access to the event prefixes.
+    public string[] ReaderRoleArns { get; set; } = Array.Empty<string>();
 
     /// <summary>
     /// When true (sandbox), the bucket auto-deletes objects and is destroyed on stack delete.
@@ -32,25 +32,52 @@ public class ReportingBucket : Construct
     public ReportingBucket(Construct scope, string id, ReportingBucketProps props)
         : base(scope, id)
     {
-        EncryptionKey = Key.FromLookup(
-            this,
-            "ReportingBucketKey",
-            new KeyLookupOptions() { AliasName = props.EncryptionKeyAlias ?? "alias/SQSKey" }
-        );
+        EncryptionKey = Alias.FromAliasName(this, "OrgS3Key", "alias/S3BucketDefaultKMSKey");
 
         Bucket = new Bucket(
             this,
             "Bucket",
             new BucketProps()
             {
+                BucketName = props.BucketName,
                 Encryption = BucketEncryption.KMS,
                 EncryptionKey = EncryptionKey,
+                BucketKeyEnabled = true,
                 EnforceSSL = true,
                 BlockPublicAccess = BlockPublicAccess.BLOCK_ALL,
-                Versioned = false,
+                PublicReadAccess = false,
+                Versioned = true,
                 RemovalPolicy = props.IsSandbox ? RemovalPolicy.DESTROY : RemovalPolicy.RETAIN,
                 AutoDeleteObjects = props.IsSandbox,
             }
         );
+
+        if (props.ReaderRoleArns.Length > 0)
+        {
+            var principals = props.ReaderRoleArns.Select(arn => (IPrincipal)new ArnPrincipal(arn)).ToArray();
+
+            Bucket.AddToResourcePolicy(
+                new PolicyStatement(
+                    new PolicyStatementProps
+                    {
+                        Effect = Effect.ALLOW,
+                        Principals = principals,
+                        Actions = ["s3:ListBucket", "s3:GetBucketLocation"],
+                        Resources = [Bucket.BucketArn],
+                    }
+                )
+            );
+            Bucket.AddToResourcePolicy(
+                new PolicyStatement(
+                    new PolicyStatementProps
+                    {
+                        Effect = Effect.ALLOW,
+                        Principals = principals,
+                        Actions = ["s3:GetObject", "s3:GetObjectVersion"],
+                        Resources = [$"{Bucket.BucketArn}/*"],
+                    }
+                )
+            );
+        }
     }
 }

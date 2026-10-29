@@ -39,6 +39,7 @@ public class Environment
     public string? MedicationHistoryEntraTokenUrl { get; set; }
     public string MedicationHistoryMsAuthEnv { get; set; } = "Test";
     public string? RxHistoryEntraCredentialsSecretName { get; set; }
+    public string[] RtpbEventStoreReaderRoleArns { get; set; } = Array.Empty<string>();
 }
 
 public class ClientConfiguration

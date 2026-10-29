@@ -600,7 +600,12 @@ public class EventProcessorInfraStack : BaseStack
         var reportingBucket = new ReportingBucket(
             this,
             "RtpbReportingBucket",
-            new ReportingBucketProps() { IsSandbox = isSandbox }
+            new ReportingBucketProps()
+            {
+                IsSandbox = isSandbox,
+                BucketName = $"{AppRoot}-{CurrentEnvironment.Name}-rtpb-event-store-{Aws.ACCOUNT_ID}-{Aws.REGION}",
+                ReaderRoleArns = infraConfig.RtpbEventStoreReaderRoleArns,
+            }
         );
 
         var lambda = new FunctionWithRole(

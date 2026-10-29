@@ -54,7 +54,8 @@
       "RxHistoryEntraCredentialsSecretName": "RxHistory-EntraCredentials",
       "MemberPricingBaseURL": "https://memberpricing-test.navitus.com/nav/claimsend.php",
       "DrugPricingBaseURL": "https://drugpricing-test.api.navitus.com/V1/DrugPricing/GetDrugPrices",
-      "TcnEnabled": false
+      "TcnEnabled": false,
+      "RtpbEventStoreReaderRoleArns": []
     },
     {
       "Name": "dev",
@@ -98,7 +99,11 @@
       "RxHistoryEntraCredentialsSecretName": "RxHistory-EntraCredentials",
       "MemberPricingBaseURL": "https://memberpricing-test.navitus.com/nav/claimsend.php",
       "DrugPricingBaseURL": "https://drugpricing-test.api.navitus.com/V1/DrugPricing/GetDrugPrices",
-      "TcnEnabled": false
+      "TcnEnabled": false,
+      "RtpbEventStoreReaderRoleArns": [
+        "arn:aws:iam::081757267393:role/nhs-sandbox-cross-account-reader",
+        "arn:aws:iam::471112525231:role/nhs-develop-cross-account-reader"
+      ]
     },
     {
       "Name": "test",
@@ -142,7 +147,10 @@
       "RxHistoryEntraCredentialsSecretName": "RxHistory-EntraCredentials",
       "MemberPricingBaseURL": "https://memberpricing-test.navitus.com/nav/claimsend.php",
       "DrugPricingBaseURL": "https://drugpricing-test.api.navitus.com/V1/DrugPricing/GetDrugPrices",
-      "TcnEnabled": false
+      "TcnEnabled": false,
+      "RtpbEventStoreReaderRoleArns": [
+        "arn:aws:iam::471112525231:role/nhs-develop-cross-account-reader"
+      ]
     },
     {
       "Name": "stage",
@@ -196,7 +204,10 @@
       "RxHistoryEntraCredentialsSecretName": "RxHistory-EntraCredentials",
       "MemberPricingBaseURL": "https://memberpricing-test.navitus.com/nav/claimsend.php",
       "DrugPricingBaseURL": "https://drugpricing-stage.api.navitus.com/V1/DrugPricing/GetDrugPrices",
-      "TcnEnabled": true
+      "TcnEnabled": true,
+      "RtpbEventStoreReaderRoleArns": [
+        "arn:aws:iam::471112525231:role/nhs-develop-cross-account-reader"
+      ]
     },
     {
       "Name": "prod",
@@ -240,7 +251,10 @@
       "RxHistoryEntraCredentialsSecretName": "RxHistory-EntraCredentials",
       "MemberPricingBaseURL": "https://memberpricing.navitus.com/nav/claimsend.php",
       "DrugPricingBaseURL": "https://drugpricing.api.navitus.com/V1/DrugPricing/GetDrugPrices",
-      "TcnEnabled": false
+      "TcnEnabled": false,
+      "RtpbEventStoreReaderRoleArns": [
+        "arn:aws:iam::905418353196:role/nhs-prod-cross-account-reader"
+      ]
     }
   ]
 }

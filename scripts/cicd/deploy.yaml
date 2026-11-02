@@ -7,7 +7,7 @@ resources:
     name: ado-pipeline-templates
   pipelines:
   - pipeline: UMEventProcessorsBuild
-    source: um-event-processors
+    source: um-event-processors-build
     project: NUCLEUS
     trigger:
       branches:
@@ -23,18 +23,18 @@ variables:
 stages:
 - template: _template-deploy.yaml
   parameters:
-    tpl_Enabled: true # TODO: restore branch condition after approval testing
+    tpl_Enabled: ${{ or(startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'), startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/')) }}
     tpl_Environment: "test"
 
 - template: _template-deploy.yaml
   parameters:
-    tpl_Enabled: true # TODO: restore branch condition after approval testing
+    tpl_Enabled: ${{ or(startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'), startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/')) }}
     tpl_Environment: "stage"
     tpl_DependsOn: "test"
 
 - template: _template-deploy.yaml
   parameters:
-    tpl_Enabled: true # TODO: restore branch condition after approval testing
+    tpl_Enabled: ${{ or(startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'), startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/')) }}
     tpl_Environment: "prod"
     tpl_DependsOn: "stage"
 

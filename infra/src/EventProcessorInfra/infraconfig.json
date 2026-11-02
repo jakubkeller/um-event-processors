@@ -54,7 +54,6 @@
       "RxHistoryEntraCredentialsSecretName": "RxHistory-EntraCredentials",
       "MemberPricingBaseURL": "https://memberpricing-test.navitus.com/nav/claimsend.php",
       "DrugPricingBaseURL": "https://drugpricing-test.api.navitus.com/V1/DrugPricing/GetDrugPrices",
-      "TcnEnabled": false,
       "RtpbEventStoreReaderRoleArns": []
     },
     {
@@ -99,7 +98,6 @@
       "RxHistoryEntraCredentialsSecretName": "RxHistory-EntraCredentials",
       "MemberPricingBaseURL": "https://memberpricing-test.navitus.com/nav/claimsend.php",
       "DrugPricingBaseURL": "https://drugpricing-test.api.navitus.com/V1/DrugPricing/GetDrugPrices",
-      "TcnEnabled": false,
       "RtpbEventStoreReaderRoleArns": [
         "arn:aws:iam::081757267393:role/nhs-sandbox-cross-account-reader",
         "arn:aws:iam::471112525231:role/nhs-develop-cross-account-reader"
@@ -147,7 +145,6 @@
       "RxHistoryEntraCredentialsSecretName": "RxHistory-EntraCredentials",
       "MemberPricingBaseURL": "https://memberpricing-test.navitus.com/nav/claimsend.php",
       "DrugPricingBaseURL": "https://drugpricing-test.api.navitus.com/V1/DrugPricing/GetDrugPrices",
-      "TcnEnabled": false,
       "RtpbEventStoreReaderRoleArns": [
         "arn:aws:iam::471112525231:role/nhs-develop-cross-account-reader"
       ]
@@ -204,7 +201,6 @@
       "RxHistoryEntraCredentialsSecretName": "RxHistory-EntraCredentials",
       "MemberPricingBaseURL": "https://memberpricing-test.navitus.com/nav/claimsend.php",
       "DrugPricingBaseURL": "https://drugpricing-stage.api.navitus.com/V1/DrugPricing/GetDrugPrices",
-      "TcnEnabled": true,
       "RtpbEventStoreReaderRoleArns": [
         "arn:aws:iam::471112525231:role/nhs-develop-cross-account-reader"
       ]
@@ -251,7 +247,6 @@
       "RxHistoryEntraCredentialsSecretName": "RxHistory-EntraCredentials",
       "MemberPricingBaseURL": "https://memberpricing.navitus.com/nav/claimsend.php",
       "DrugPricingBaseURL": "https://drugpricing.api.navitus.com/V1/DrugPricing/GetDrugPrices",
-      "TcnEnabled": false,
       "RtpbEventStoreReaderRoleArns": [
         "arn:aws:iam::905418353196:role/nhs-prod-cross-account-reader"
       ]

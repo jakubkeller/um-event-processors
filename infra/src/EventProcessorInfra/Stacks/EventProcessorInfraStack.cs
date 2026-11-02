@@ -6,6 +6,8 @@ using Amazon.CDK.AWS.IAM;
 using Amazon.CDK.AWS.Lambda.EventSources;
 using Amazon.CDK.AWS.SSM;
 using Amazon.CDK.AWS.S3;
+using Amazon.SimpleSystemsManagement;
+using Amazon.SimpleSystemsManagement.Model;
 using Constructs;
 using UM.Infra.Base;
 using UM.Infra.Base.Config;
@@ -46,6 +48,8 @@ public class EventProcessorInfraStack : BaseStack
             .FromStringParameterName(this, "UMApiCustomBaseURLParam", $"{ssmPathRoot}/UMApiCustomBaseURL")
             .StringValue;
 
+        var tcnEnabled = GetTcnEnabledValue(ssmPathRoot);
+
         var databaseCredentialSet = new HashSet<string>();
         foreach (var clientConfiguration in infraConfig.ClientConfigurations)
             databaseCredentialSet.Add(clientConfiguration.SecretNameUtilizationManagementDatabase);
@@ -53,8 +57,8 @@ public class EventProcessorInfraStack : BaseStack
         AddTemplatedNoteProcessor(id, infraConfig, isSandbox, source, umEventBus, umApiCustomBaseURL, databaseCredentialSet, [umLambdasSG]);
         AddEmailProcessor(id, infraConfig, isSandbox, umEventBus, umApiCustomBaseURL, databaseCredentialSet, [umLambdasSG]);
         AddSendEmailProcessor(id, infraConfig, isSandbox, source, umEventBus, umApiCustomBaseURL, databaseCredentialSet, [umLambdasSG]);
-        AddTcnOralNotificationProcessor(id, infraConfig, isSandbox, source, umEventBus, umApiCustomBaseURL, [umLambdasSG]);
-        AddTcnPollingProcessor(id, infraConfig, isSandbox, umApiCustomBaseURL, [umLambdasSG]);
+        AddTcnOralNotificationProcessor(id, infraConfig, isSandbox, source, umEventBus, umApiCustomBaseURL, tcnEnabled, [umLambdasSG]);
+        AddTcnPollingProcessor(id, infraConfig, isSandbox, umApiCustomBaseURL, tcnEnabled, [umLambdasSG]);
         AddRtpbReceiveProcessor(id, infraConfig, isSandbox, source, umEventBus, [umLambdasSG]);
 
         _ = new EventProcessor(
@@ -75,6 +79,28 @@ public class EventProcessorInfraStack : BaseStack
                 SecurityGroups = [umLambdasSG]
             }
         );
+    }
+
+    /// <summary>
+    /// Resolves TCN enablement directly via the AWS SDK (not a CDK token/dynamic reference), so that a
+    /// missing parameter; e.g. before um-api has ever deployed this value in a new account/environment,
+    /// safely defaults to "false" instead of failing this stack's deploy.
+    /// </summary>
+    private static string GetTcnEnabledValue(string ssmPathRoot)
+    {
+        try
+        {
+            using var ssmClient = new AmazonSimpleSystemsManagementClient();
+            var response = ssmClient
+                .GetParameterAsync(new GetParameterRequest { Name = $"{ssmPathRoot}/TcnEnabled" })
+                .GetAwaiter()
+                .GetResult();
+            return response.Parameter.Value;
+        }
+        catch (ParameterNotFoundException)
+        {
+            return "false";
+        }
     }
 
     private void AddTemplatedNoteProcessor(
@@ -402,6 +428,7 @@ public class EventProcessorInfraStack : BaseStack
         string source,
         IEventBus umEventBus,
         string umApiCustomBaseURL,
+        string tcnEnabled,
         ISecurityGroup[]? securityGroups
     )
     {
@@ -487,7 +514,7 @@ public class EventProcessorInfraStack : BaseStack
             "TcnOralNotificationEventRule",
             new RuleProps()
             {
-                Enabled = infraConfig.TcnEnabled,
+                Enabled = bool.Parse(tcnEnabled),
                 EventBus = umEventBus,
                 Targets =
                 [
@@ -507,6 +534,7 @@ public class EventProcessorInfraStack : BaseStack
         Environment infraConfig,
         bool isSandbox,
         string umApiCustomBaseURL,
+        string tcnEnabled,
         ISecurityGroup[]? securityGroups
     )
     {
@@ -569,7 +597,7 @@ public class EventProcessorInfraStack : BaseStack
             "TcnPollingScheduleRule",
             new RuleProps()
             {
-                Enabled = infraConfig.TcnEnabled,
+                Enabled = bool.Parse(tcnEnabled),
                 Schedule = Schedule.Rate(Duration.Minutes(15)),
                 Description = "Triggers TcnPollingProcessor every 15 minutes to poll for TCN call results",
                 Targets =

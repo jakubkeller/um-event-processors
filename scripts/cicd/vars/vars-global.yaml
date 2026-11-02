@@ -1,0 +1,46 @@
+parameters:
+  - name: "tpl_type"
+    type: string
+    default: ""
+
+variables:
+  - name: APP_NAME
+    value: UMEventProcessors
+  - name: REGION_NAME
+    value: "us-east-2"
+    readonly: true
+  - name: AGENT_POOL
+    value: "aws-cdk"
+
+  - name: NODE_VERSION
+    value: "22.11.0"
+  - name: CDK_VERSION
+    value: "2.1142.0"
+
+  - ${{ if eq(parameters.tpl_type, 'Build') }}:
+      - name: LOCAL_PATH
+        value: "$(Build.Repository.LocalPath)/"
+      - name: INFRA_SCRIPTS_PATH
+        value: "$(LOCAL_PATH)scripts/cicd/infra"
+      - name: EVENT_PROCESSORS_SCRIPTS_PATH
+        value: "$(LOCAL_PATH)scripts/cicd/event-processors"
+      - name: PUBLISH_PATH
+        value: "$(LOCAL_PATH)dist"
+      - name: BUILD_PATH
+        value: "$(LOCAL_PATH)dist"
+      - name: ARTIFACTSTAGING_PATH
+        value: "$(Build.ArtifactStagingDirectory)"
+      - name: TESTRESULT_PATH
+        value: "$(Agent.TempDirectory)/$(Build.BuildId)"
+
+  - ${{ if eq(parameters.tpl_type, 'Deploy') }}:
+      - name: RESOURCE_PIPELINE_NAME
+        value: "UMEventProcessorsBuild"
+      - name: ARTIFACT_NAME
+        value: "UMEventProcessors"
+      - name: LOCAL_PATH
+        value: "$(PIPELINE.WORKSPACE)/$(RESOURCE_PIPELINE_NAME)/$(ARTIFACT_NAME)/"
+      - name: INFRA_SCRIPTS_PATH
+        value: "$(LOCAL_PATH)scripts/cicd/infra"
+      - name: EVENT_PROCESSORS_SCRIPTS_PATH
+        value: "$(LOCAL_PATH)scripts/cicd/event-processors"

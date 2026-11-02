@@ -1,0 +1,3 @@
+variables:
+  SERVICE_CONNECTION: "utilmgmt-test"
+  ENVIRONMENTTYPE: "testing"  # variable name must match name used for tagging in BaseTaggingOptions.cs; value must match AWS tagging policy

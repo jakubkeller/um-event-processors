@@ -1,0 +1,5 @@
+variables:
+  SERVICE_CONNECTION: "utilmgmt-prod"
+  ENVIRONMENTTYPE: "production"  # variable name must match name used in BaseTaggingOptions.cs, value must match AWS tagging policy
+  pauseNotify: |
+    aws.utilizationmanagement+PROD@navitus.com

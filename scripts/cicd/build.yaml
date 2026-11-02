@@ -1,0 +1,42 @@
+trigger:
+  branches:
+    include:
+      - develop
+      - release/*
+      - hotfix/*
+
+parameters:
+  - name: serviceConnection
+    displayName: ADO Service Connection Name
+    default: "utilmgmt-dev"
+    values:
+      - "pod12-sandbox"
+      - "utilmgmt-dev"
+      - "utilmgmt-test"
+  - name: clean
+    displayName: Clean agent working directory on checkout
+    type: boolean
+    default: true
+    values:
+      - false
+      - true
+  - name: Postclean
+    displayName: Post Completion Clean-up
+    type: boolean
+    default: true
+    values:
+      - false
+      - true
+
+variables:
+  - template: vars/vars-global.yaml
+    parameters:
+      tpl_type: "Build"
+
+stages:
+  - template: _template-build.yaml
+    parameters:
+      tpl_clean: ${{parameters.clean}}
+      tpl_serviceConnection: ${{parameters.serviceConnection}}
+      tpl_Postclean: ${{parameters.Postclean}}
+      tpl_displayName: "Build ${{ variables['Build.SourceBranch'] }}"

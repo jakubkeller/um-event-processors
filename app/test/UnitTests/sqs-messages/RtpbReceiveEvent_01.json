@@ -1,0 +1,20 @@
+{
+	"Records": [
+		{
+			"messageId": "19dd0b57-b21e-4ac1-bd88-01bbb068cb78",
+			"receiptHandle": "MessageReceiptHandle",
+			"body": "{\"version\":\"0\",\"id\":\"a43a861a-8b5d-46e6-a175-6979a75f6385\",\"detail-type\":\"RtpbReceiveEvent\",\"source\":\"com.navitus.um\",\"account\":\"255169513165\",\"time\":\"2025-01-07T20:53:38Z\",\"region\":\"us-east-2\",\"resources\":[],\"detail\":{\"payload\":{\"requestMessageId\":\"11111111-2222-3333-4444-555555555555\",\"responseMessageId\":\"66666666-7777-8888-9999-000000000000\",\"requestTimestamp\":\"2025-01-07T20:53:38+00:00\",\"responseTimestamp\":\"2025-01-07T20:53:39+00:00\",\"vendor\":\"TestVendor\",\"status\":true,\"requestXml\":\"<Request>request-xml-payload<\\/Request>\",\"responseXml\":\"<Response>response-xml-payload<\\/Response>\"},\"version\":\"1\"}}",
+			"attributes": {
+				"ApproximateReceiveCount": "1",
+				"SentTimestamp": "1523232000000",
+				"SenderId": "123456789012",
+				"ApproximateFirstReceiveTimestamp": "1523232000001"
+			},
+			"messageAttributes": {},
+			"md5OfBody": "7b270e59b47ff90a553787216d55d91d",
+			"eventSource": "aws:sqs",
+			"eventSourceARN": "arn:{partition}:sqs:{region}:123456789012:MyQueue",
+			"awsRegion": "{region}"
+		}
+	]
+}

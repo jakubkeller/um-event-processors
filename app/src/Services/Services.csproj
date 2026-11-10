@@ -14,7 +14,12 @@
 
   <ItemGroup>
     <PackageReference Include="AWSSDK.EventBridge" Version="4.0.100.14" />
+    <PackageReference Include="AWSSDK.S3" Version="4.0.103.3" />
+    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.3.25" />
     <PackageReference Include="Azure.Identity" Version="1.17.0" />
     <PackageReference Include="Microsoft.Graph" Version="5.96.0" />
+
+    <!-- Pinning For CVE-2026-44503 Remediation (transitive via Microsoft.Graph) -->
+    <PackageReference Include="Microsoft.Kiota.Abstractions" Version="1.22.2" />
   </ItemGroup>
 </Project>

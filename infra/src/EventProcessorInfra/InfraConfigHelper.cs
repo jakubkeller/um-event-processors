@@ -32,13 +32,13 @@ public class Environment
     public string TcnDescription { get; set; } = default!;
     public string TcnTimezone { get; set; } = default!;
     public string TcnDialOrder { get; set; } = default!;
-    public bool TcnEnabled { get; set; } = true;
     public string UMEventBusArn { get; set; } = default!;
     public string TcnFailureNotificationDistributionList { get; set; } = default!;
     public string? MedicationHistoryBaseUrl { get; set; }
     public string? MedicationHistoryEntraTokenUrl { get; set; }
     public string MedicationHistoryMsAuthEnv { get; set; } = "Test";
     public string? RxHistoryEntraCredentialsSecretName { get; set; }
+    public string[] RtpbEventStoreReaderRoleArns { get; set; } = Array.Empty<string>();
 }
 
 public class ClientConfiguration

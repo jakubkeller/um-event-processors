@@ -19,6 +19,12 @@ namespace Services
             services.AddSingleton<IDocumentService, DocumentService>();
         }
 
+        public static void AddRtpbReceiveProcessorServices(this IServiceCollection services)
+        {
+            services.AddAWSService<Amazon.S3.IAmazonS3>();
+            services.AddSingleton<IRtpbReportingStorageService, RtpbReportingStorageService>();
+        }
+
         public static void AddSendEmailProcessorServices(this IServiceCollection services)
         {
             services.AddSingleton<IFileService, FileService>();

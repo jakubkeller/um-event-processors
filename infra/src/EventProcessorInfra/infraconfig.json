@@ -238,7 +238,7 @@
       "TcnTimezone": "America/Chicago",
       "TcnDialOrder": "first number",
       "UMEventBusArn": "arn:aws:events:us-east-2:407736563583:event-bus/umEventBus",
-      "TcnFailureNotificationDistributionList": "DL-PAMailroom@navitus.com,prior.authorization@navitus.com",
+      "TcnFailureNotificationDistributionList": "DL-PAMailroom@navitus.com,DL-MedDPriorAuthOpsLeadership@navitus.com,GrievanceandAppealsLeadership@navitus.com",
       "FormularyAlternativesBaseUrl": "https://formularyalternatives.api.navitus.com",
       "DrugsV3ApiBaseURL": "https://prod.api.drug-prod.aws.navitus.com/latest/industry-files",
       "MedicationHistoryBaseUrl": "https://rxhistory.api.navitus.com",

@@ -26,6 +26,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="system.private.uri" Version="4.3.2" />
+
+    <!-- Pinning For CVE-2026-44503 Remediation (transitive via Microsoft.Graph) -->
+    <PackageReference Include="Microsoft.Kiota.Abstractions" Version="1.22.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ServiceClients\ServiceClients.csproj" />

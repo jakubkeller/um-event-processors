@@ -58,6 +58,12 @@ public class TcnOralNotificationService : ITcnOralNotificationService
             configuration.GetValue<string>("IntegrationPriorAuthBaseURL")
             ?? throw new Exception("Missing required configuration value IntegrationPriorAuthBaseURL");
         _medicationHistoryServiceClient = medicationHistoryServiceClient;
+        if (_medicationHistoryServiceClient != null)
+        {
+            _medicationHistoryServiceClient.BaseUrl =
+                configuration.GetValue<string>("MedicationHistory:BaseUrl")
+                ?? throw new Exception("Missing required configuration value MedicationHistory:BaseUrl");
+        }
         _configuration = configuration;
     }
 

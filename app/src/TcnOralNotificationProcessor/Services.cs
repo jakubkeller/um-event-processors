@@ -40,6 +40,12 @@ public static class Services
             configurationManager.AddAmazonSecretsManager(currentRegion, rxHistoryEntraSecret, "MedicationHistory");
         }
 
+        var navitusCaCertSecret = configuration.GetValue<string>("NavitusCaCertSecretName");
+        if (!string.IsNullOrEmpty(navitusCaCertSecret))
+        {
+            configurationManager.AddAmazonSecretsManager(currentRegion, navitusCaCertSecret, "NavitusCaCert");
+        }
+
         configuration = configurationManager.Build();
 
         _services.AddSingleton<IConfiguration>(configuration);

@@ -428,8 +428,12 @@ public class EventProcessorInfraStack : BaseStack
                     { "MedicationHistory__EntraTokenUrl", infraConfig.MedicationHistoryEntraTokenUrl ?? string.Empty },
                     { "MedicationHistory__MsAuthEnv", infraConfig.MedicationHistoryMsAuthEnv },
                     { "SECRET_NAME_RXHISTORY_ENTRA", infraConfig.RxHistoryEntraCredentialsSecretName ?? string.Empty },
+                    { "NavitusCaCertSecretName", infraConfig.NavitusCaCertSecretName ?? string.Empty },
                 },
-                SecretsToGrantRead = string.IsNullOrEmpty(infraConfig.RxHistoryEntraCredentialsSecretName) ? null : [infraConfig.RxHistoryEntraCredentialsSecretName],
+                SecretsToGrantRead = new[] { infraConfig.RxHistoryEntraCredentialsSecretName, infraConfig.NavitusCaCertSecretName }
+                    .OfType<string>()
+                    .Where(secret => !string.IsNullOrEmpty(secret))
+                    .ToArray(),
                 MemorySize = 256,
                 VpcId = infraConfig.VpcId,
                 Timeout = 120,

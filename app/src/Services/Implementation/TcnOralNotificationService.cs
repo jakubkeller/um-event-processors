@@ -62,7 +62,7 @@ public class TcnOralNotificationService : ITcnOralNotificationService
         {
             _medicationHistoryServiceClient.BaseUrl =
                 configuration.GetValue<string>("MedicationHistory:BaseUrl")
-                ?? throw new Exception("Missing required configuration value MedicationHistory:BaseUrl");
+                ?? throw new InvalidOperationException("Missing required configuration value MedicationHistory:BaseUrl");
         }
         _configuration = configuration;
     }

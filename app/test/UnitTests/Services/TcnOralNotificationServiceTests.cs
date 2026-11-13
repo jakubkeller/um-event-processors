@@ -39,7 +39,8 @@ public class TcnOralNotificationServiceTests
             { "TCN_IMPORT_TEMPLATE", "2" },
             { "TCN_DESCRIPTION", "Test TCN" },
             { "TCN_TIMEZONE", "CST" },
-            { "TCN_DIAL_ORDER", "HCW" }
+            { "TCN_DIAL_ORDER", "HCW" },
+            { "MedicationHistory:BaseUrl", "https://rxhistory-test" }
         };
 
         _configuration = new ConfigurationBuilder()

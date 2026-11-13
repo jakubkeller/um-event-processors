@@ -52,6 +52,7 @@
       "MedicationHistoryEntraTokenUrl": "https://navitustest.ciamlogin.com/01057be9-a851-48d7-918c-d1677d938e9d/oauth2/v2.0/token",
       "MedicationHistoryMsAuthEnv": "Test",
       "RxHistoryEntraCredentialsSecretName": "RxHistory-EntraCredentials",
+      "NavitusCaCertSecretName": "NavitusCaCert",
       "MemberPricingBaseURL": "https://memberpricing-test.navitus.com/nav/claimsend.php",
       "DrugPricingBaseURL": "https://drugpricing-test.api.navitus.com/V1/DrugPricing/GetDrugPrices",
       "RtpbEventStoreReaderRoleArns": []
@@ -96,6 +97,7 @@
       "MedicationHistoryEntraTokenUrl": "https://navitustest.ciamlogin.com/01057be9-a851-48d7-918c-d1677d938e9d/oauth2/v2.0/token",
       "MedicationHistoryMsAuthEnv": "Test",
       "RxHistoryEntraCredentialsSecretName": "RxHistory-EntraCredentials",
+      "NavitusCaCertSecretName": "NavitusCaCert",
       "MemberPricingBaseURL": "https://memberpricing-test.navitus.com/nav/claimsend.php",
       "DrugPricingBaseURL": "https://drugpricing-test.api.navitus.com/V1/DrugPricing/GetDrugPrices",
       "RtpbEventStoreReaderRoleArns": [
@@ -143,6 +145,7 @@
       "MedicationHistoryEntraTokenUrl": "https://navitustest.ciamlogin.com/01057be9-a851-48d7-918c-d1677d938e9d/oauth2/v2.0/token",
       "MedicationHistoryMsAuthEnv": "Test",
       "RxHistoryEntraCredentialsSecretName": "RxHistory-EntraCredentials",
+      "NavitusCaCertSecretName": "NavitusCaCert",
       "MemberPricingBaseURL": "https://memberpricing-test.navitus.com/nav/claimsend.php",
       "DrugPricingBaseURL": "https://drugpricing-test.api.navitus.com/V1/DrugPricing/GetDrugPrices",
       "RtpbEventStoreReaderRoleArns": [
@@ -199,6 +202,7 @@
       "MedicationHistoryEntraTokenUrl": "https://navitustest.ciamlogin.com/01057be9-a851-48d7-918c-d1677d938e9d/oauth2/v2.0/token",
       "MedicationHistoryMsAuthEnv": "Test",
       "RxHistoryEntraCredentialsSecretName": "RxHistory-EntraCredentials",
+      "NavitusCaCertSecretName": "NavitusCaCert",
       "MemberPricingBaseURL": "https://memberpricing-test.navitus.com/nav/claimsend.php",
       "DrugPricingBaseURL": "https://drugpricing-stage.api.navitus.com/V1/DrugPricing/GetDrugPrices",
       "RtpbEventStoreReaderRoleArns": [
@@ -245,6 +249,7 @@
       "MedicationHistoryEntraTokenUrl": "https://navitusprod.ciamlogin.com/99877cf3-e9a2-4981-8e8e-86b6c70c9ed6/oauth2/v2.0/token",
       "MedicationHistoryMsAuthEnv": "Prod",
       "RxHistoryEntraCredentialsSecretName": "RxHistory-EntraCredentials",
+      "NavitusCaCertSecretName": "NavitusCaCert",
       "MemberPricingBaseURL": "https://memberpricing.navitus.com/nav/claimsend.php",
       "DrugPricingBaseURL": "https://drugpricing.api.navitus.com/V1/DrugPricing/GetDrugPrices",
       "RtpbEventStoreReaderRoleArns": [

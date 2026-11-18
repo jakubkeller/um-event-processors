@@ -35,10 +35,6 @@
         }
       ],
       "IntegrationPriorAuthBaseURL": "https://ri2ytge0k6.execute-api.us-east-2.amazonaws.com/v1",
-      "EligibilityApiBaseUrl": "https://eligibilityapi.eligibilitydev.aws.navitus.com/v1",
-      "PharmacyApiBaseURL": "https://pharmacy-dev.api.navitus.com",
-      "DrugServiceBaseURL": "https://drug-dev.api.navitus.com",
-      "TcnAccessTokenSecretArn": "arn:aws:secretsmanager:us-east-2:216222533542:secret:TCN-AccessToken",
       "TcnScheduleTemplateNumber": "1",
       "TcnImportTemplateNumber": "1",
       "TcnDescription": "Medicare PA Oral Notification",
@@ -46,15 +42,11 @@
       "TcnDialOrder": "first number",
       "UMEventBusArn": "arn:aws:events:us-east-2:822596811112:event-bus/umEventBus",
       "TcnFailureNotificationDistributionList": "aws.utilizationmanagement@navitus.com",
-      "FormularyAlternativesBaseUrl": "https://formularyalternatives-test.api.navitus.com",
-      "DrugsV3ApiBaseURL": "https://dev.api.drug-dev.aws.navitus.com/latest/industry-files",
       "MedicationHistoryBaseUrl": "https://rxhistory-test.api.navitus.com",
       "MedicationHistoryEntraTokenUrl": "https://navitustest.ciamlogin.com/01057be9-a851-48d7-918c-d1677d938e9d/oauth2/v2.0/token",
       "MedicationHistoryMsAuthEnv": "Test",
       "RxHistoryEntraCredentialsSecretName": "RxHistory-EntraCredentials",
       "NavitusCaCertSecretName": "NavitusCaCert",
-      "MemberPricingBaseURL": "https://memberpricing-test.navitus.com/nav/claimsend.php",
-      "DrugPricingBaseURL": "https://drugpricing-test.api.navitus.com/V1/DrugPricing/GetDrugPrices",
       "RtpbEventStoreReaderRoleArns": []
     },
     {
@@ -80,10 +72,6 @@
         }
       ],
       "IntegrationPriorAuthBaseURL": "https://gateway.integration-dev.aws.navitus.com/v1",
-      "EligibilityApiBaseUrl": "https://eligibilityapi.eligibilitydev.aws.navitus.com/v1",
-      "PharmacyApiBaseURL": "https://pharmacy-dev.api.navitus.com",
-      "DrugServiceBaseURL": "https://drug-dev.api.navitus.com",
-      "TcnAccessTokenSecretArn": "arn:aws:secretsmanager:us-east-2:216222533542:secret:TCN-AccessToken",
       "TcnScheduleTemplateNumber": "1",
       "TcnImportTemplateNumber": "1",
       "TcnDescription": "Medicare PA Oral Notification",
@@ -91,15 +79,11 @@
       "TcnDialOrder": "first number",
       "UMEventBusArn": "arn:aws:events:us-east-2:406651776354:event-bus/umEventBus",
       "TcnFailureNotificationDistributionList": "aws.utilizationmanagement@navitus.com",
-      "FormularyAlternativesBaseUrl": "https://formularyalternatives-test.api.navitus.com",
-      "DrugsV3ApiBaseURL": "https://dev.api.drug-dev.aws.navitus.com/latest/industry-files",
       "MedicationHistoryBaseUrl": "https://rxhistory-test.api.navitus.com",
       "MedicationHistoryEntraTokenUrl": "https://navitustest.ciamlogin.com/01057be9-a851-48d7-918c-d1677d938e9d/oauth2/v2.0/token",
       "MedicationHistoryMsAuthEnv": "Test",
       "RxHistoryEntraCredentialsSecretName": "RxHistory-EntraCredentials",
       "NavitusCaCertSecretName": "NavitusCaCert",
-      "MemberPricingBaseURL": "https://memberpricing-test.navitus.com/nav/claimsend.php",
-      "DrugPricingBaseURL": "https://drugpricing-test.api.navitus.com/V1/DrugPricing/GetDrugPrices",
       "RtpbEventStoreReaderRoleArns": [
         "arn:aws:iam::081757267393:role/nhs-sandbox-cross-account-reader",
         "arn:aws:iam::471112525231:role/nhs-develop-cross-account-reader"
@@ -128,10 +112,6 @@
         }
       ],
       "IntegrationPriorAuthBaseURL": "https://gateway.integration-test.aws.navitus.com/v1",
-      "EligibilityApiBaseUrl": "https://eligibilityapi.eligibilitytest.aws.navitus.com/v1",
-      "PharmacyApiBaseURL": "https://pharmacy-test.api.navitus.com",
-      "DrugServiceBaseURL": "https://drug-test.api.navitus.com",
-      "TcnAccessTokenSecretArn": "arn:aws:secretsmanager:us-east-2:490277014278:secret:TCN-AccessToken",
       "TcnScheduleTemplateNumber": "1",
       "TcnImportTemplateNumber": "1",
       "TcnDescription": "Medicare PA Oral Notification",
@@ -139,15 +119,11 @@
       "TcnDialOrder": "first number",
       "UMEventBusArn": "arn:aws:events:us-east-2:689489877515:event-bus/umEventBus",
       "TcnFailureNotificationDistributionList": "aws.utilizationmanagement@navitus.com",
-      "FormularyAlternativesBaseUrl": "https://formularyalternatives-test.api.navitus.com",
-      "DrugsV3ApiBaseURL": "https://test.api.drug-test.aws.navitus.com/latest/industry-files",
       "MedicationHistoryBaseUrl": "https://rxhistory-test.api.navitus.com",
       "MedicationHistoryEntraTokenUrl": "https://navitustest.ciamlogin.com/01057be9-a851-48d7-918c-d1677d938e9d/oauth2/v2.0/token",
       "MedicationHistoryMsAuthEnv": "Test",
       "RxHistoryEntraCredentialsSecretName": "RxHistory-EntraCredentials",
       "NavitusCaCertSecretName": "NavitusCaCert",
-      "MemberPricingBaseURL": "https://memberpricing-test.navitus.com/nav/claimsend.php",
-      "DrugPricingBaseURL": "https://drugpricing-test.api.navitus.com/V1/DrugPricing/GetDrugPrices",
       "RtpbEventStoreReaderRoleArns": [
         "arn:aws:iam::471112525231:role/nhs-develop-cross-account-reader"
       ]
@@ -185,10 +161,6 @@
         }
       ],
       "IntegrationPriorAuthBaseURL": "https://gateway.integration-stage.aws.navitus.com/v1",
-      "EligibilityApiBaseUrl": "https://eligibilityapi.eligibility-stage.aws.navitus.com/v1",
-      "PharmacyApiBaseURL": "https://pharmacy-stage.api.navitus.com",
-      "DrugServiceBaseURL": "https://drug-stage.api.navitus.com",
-      "TcnAccessTokenSecretArn": "arn:aws:secretsmanager:us-east-2:631467398361:secret:TCN-AccessToken",
       "TcnScheduleTemplateNumber": "1",
       "TcnImportTemplateNumber": "1",
       "TcnDescription": "Medicare PA Oral Notification",
@@ -196,15 +168,11 @@
       "TcnDialOrder": "first number",
       "UMEventBusArn": "arn:aws:events:us-east-2:708388369307:event-bus/umEventBus",
       "TcnFailureNotificationDistributionList": "aws.utilizationmanagement@navitus.com",
-      "FormularyAlternativesBaseUrl": "https://formularyalternatives-stage.api.navitus.com",
-      "DrugsV3ApiBaseURL": "https://stage.api.drug-stage.aws.navitus.com/latest/industry-files",
       "MedicationHistoryBaseUrl": "https://rxhistory-stage.api.navitus.com",
       "MedicationHistoryEntraTokenUrl": "https://navitustest.ciamlogin.com/01057be9-a851-48d7-918c-d1677d938e9d/oauth2/v2.0/token",
       "MedicationHistoryMsAuthEnv": "Test",
       "RxHistoryEntraCredentialsSecretName": "RxHistory-EntraCredentials",
       "NavitusCaCertSecretName": "NavitusCaCert",
-      "MemberPricingBaseURL": "https://memberpricing-test.navitus.com/nav/claimsend.php",
-      "DrugPricingBaseURL": "https://drugpricing-stage.api.navitus.com/V1/DrugPricing/GetDrugPrices",
       "RtpbEventStoreReaderRoleArns": [
         "arn:aws:iam::471112525231:role/nhs-develop-cross-account-reader"
       ]
@@ -232,10 +200,6 @@
         }
       ],
       "IntegrationPriorAuthBaseURL": "https://gateway.integration-prod.aws.navitus.com/v1",
-      "EligibilityApiBaseUrl": "https://eligibilityapi.eligibility-prod.aws.navitus.com/v1",
-      "PharmacyApiBaseURL": "https://pharmacy.api.navitus.com",
-      "DrugServiceBaseURL": "https://drug.api.navitus.com",
-      "TcnAccessTokenSecretArn": "arn:aws:secretsmanager:us-east-2:030803782153:secret:TCN-AccessToken",
       "TcnScheduleTemplateNumber": "1",
       "TcnImportTemplateNumber": "1",
       "TcnDescription": "Medicare PA Oral Notification",
@@ -243,15 +207,11 @@
       "TcnDialOrder": "first number",
       "UMEventBusArn": "arn:aws:events:us-east-2:407736563583:event-bus/umEventBus",
       "TcnFailureNotificationDistributionList": "DL-PAMailroom@navitus.com,DL-MedDPriorAuthOpsLeadership@navitus.com,GrievanceandAppealsLeadership@navitus.com",
-      "FormularyAlternativesBaseUrl": "https://formularyalternatives.api.navitus.com",
-      "DrugsV3ApiBaseURL": "https://prod.api.drug-prod.aws.navitus.com/latest/industry-files",
       "MedicationHistoryBaseUrl": "https://rxhistory.api.navitus.com",
       "MedicationHistoryEntraTokenUrl": "https://navitusprod.ciamlogin.com/99877cf3-e9a2-4981-8e8e-86b6c70c9ed6/oauth2/v2.0/token",
       "MedicationHistoryMsAuthEnv": "Prod",
       "RxHistoryEntraCredentialsSecretName": "RxHistory-EntraCredentials",
       "NavitusCaCertSecretName": "NavitusCaCert",
-      "MemberPricingBaseURL": "https://memberpricing.navitus.com/nav/claimsend.php",
-      "DrugPricingBaseURL": "https://drugpricing.api.navitus.com/V1/DrugPricing/GetDrugPrices",
       "RtpbEventStoreReaderRoleArns": [
         "arn:aws:iam::905418353196:role/nhs-prod-cross-account-reader"
       ]
